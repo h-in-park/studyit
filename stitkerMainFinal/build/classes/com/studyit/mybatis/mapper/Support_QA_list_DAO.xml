@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.studyit.mybatis.ISupport_QA_list_DAO">
+
+<select id="listAdmin" resultType="com.studyit.mybatis.Support_QA_list_DTO">
+	<![CDATA[ 
+	SELECT RNUM, ASK_CODE, ID, TO_CHAR(ASK_DATE, 'YYYY-MM-DD') ASK_DATE, ASK_TITLE, ANSWER
+	FROM
+	(
+		SELECT ROWNUM RNUM, ASK_CODE, ID, ASK_DATE, ASK_TITLE, ANSWER
+		FROM
+		(
+			SELECT A.ASK_CODE ASK_CODE, R.ID ID, A.ASK_DATE, A.ASK_TITLE ASK_TITLE
+				 , NVL2(ASK_ANSWER, '답변 완료', '답변 대기') ANSWER
+			FROM TBL_ASK A JOIN TBL_USER_REGISTER R
+			  ON A.USER_CODE = R.USER_CODE
+			ORDER BY ASK_ANSWER_DATE, ASK_DATE
+		)
+	)
+	WHERE RNUM >= #{start} AND RNUM <= #{end}	
+	ORDER BY RNUM DESC	
+	]]> 	
+</select>
+
+<select id="listMember" resultType="com.studyit.mybatis.Support_QA_list_DTO">
+	<![CDATA[
+	SELECT RNUM, ASK_CODE, ID, TO_CHAR(ASK_DATE, 'YYYY-MM-DD') ASK_DATE, ASK_TITLE, ANSWER
+	FROM
+	(
+		SELECT ROWNUM RNUM, ASK_CODE, ID, ASK_DATE, ASK_TITLE, ANSWER
+		FROM
+		(
+			SELECT A.ASK_CODE ASK_CODE, R.ID ID, A.ASK_DATE, A.ASK_TITLE ASK_TITLE
+				 , NVL2(ASK_ANSWER, '답변 완료', '답변 대기') ANSWER
+			FROM TBL_ASK A JOIN TBL_USER_REGISTER R
+			  ON A.USER_CODE = R.USER_CODE
+			WHERE R.ID = #{id} 	
+			ORDER BY ASK_ANSWER_DATE, ASK_DATE
+		)
+	)
+	WHERE RNUM >= #{start} AND RNUM <= #{end}	
+	ORDER BY RNUM DESC
+	]]>
+</select>
+
+<select id="detail" resultType="com.studyit.mybatis.Support_QA_list_DTO">
+	SELECT R.ID ID, TO_CHAR(A.ASK_DATE, 'YYYY-MM-DD') ASK_DATE, A.ASK_TITLE ASK_TITLE, A.ASK_CONTENT ASK_CONTENT
+		 , A.ASK_ANSWER ASK_ANSWER, A.ASK_ANSWER_DATE ASK_ANSWER_DATE, A.ADMIN_CODE ADMIN_CODE
+		 , NVL2(ASK_ANSWER, '답변 완료', '답변 대기') ANSWER, A.ASK_CODE
+	FROM TBL_ASK A JOIN TBL_USER_REGISTER R
+	  ON A.USER_CODE = R.USER_CODE
+	WHERE ASK_CODE = #{ask_code}
+</select>
+
+<select id="countA" resultType="java.lang.Integer">
+	SELECT COUNT(*) COUNT
+	FROM TBL_ASK
+	WHERE ASK_ANSWER IS NULL
+</select>
+
+<select id="countAdmin" resultType="java.lang.Integer">
+	SELECT COUNT(*) COUNT
+	FROM TBL_ASK
+</select>
+
+<select id="countMember" resultType="java.lang.Integer">
+	SELECT COUNT(*) COUNT
+	FROM TBL_ASK A JOIN TBL_USER_REGISTER R
+	  ON A.USER_CODE = R.USER_CODE
+	WHERE R.ID = #{id}
+</select>
+
+<insert id="insertQ">
+	INSERT INTO TBL_ASK(ASK_CODE, USER_CODE, ASK_TITLE, ASK_CONTENT, ASK_DATE)
+	VALUES('AS'||ASK_SEQ.NEXTVAL, #{user_code}, #{ask_title},#{ask_content}, SYSDATE)
+</insert>
+
+<update id="insertA">
+	UPDATE TBL_ASK
+	SET ASK_ANSWER = #{ask_answer}, ASK_ANSWER_DATE = SYSDATE, ADMIN_CODE=#{admin_code}
+	WHERE ASK_CODE = #{ask_code}
+</update>
+
+<select id="findUserCode" resultType="java.lang.String">
+	SELECT USER_CODE
+	FROM TBL_USER_REGISTER
+	WHERE ID = #{id}
+</select>
+
+<update id="modifyQ">
+	UPDATE TBL_ASK
+	SET ASK_TITLE = #{ask_title}, ASK_CONTENT = #{ask_content}
+	WHERE ASK_CODE = #{ask_code}
+</update>
+
+<select id="searchCode" resultType="com.studyit.mybatis.Support_QA_list_DTO">
+	SELECT ASK_CODE, ASK_TITLE, ASK_CONTENT
+	FROM TBL_ASK
+	WHERE ASK_CODE = #{ask_code}
+</select>
+
+<delete id="deleteQ">
+	DELETE
+	FROM TBL_ASK
+	WHERE ASK_CODE = #{ask_code}
+</delete>
+
+</mapper>

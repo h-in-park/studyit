@@ -1,0 +1,16 @@
+@charset "UTF-8";
+
+/* 테이블 모양, 높이, 컬럼 넓이 및 페이징 위치 설정 */
+.tableDiv {min-height: 500px; }
+.table { width: 90%; height: 80%; border-collapse: collapse; margin-left: auto; margin-right: auto; margin-top: 20px; text-align: center;}
+table tr:not(.first) {height: 50px;}
+.first {height: 30px;}
+.first th:nth-child(1){ width: 10%; }
+.first th:nth-child(2){ width: 10%; }
+.first th:nth-child(3){ width: 40%; }
+.first th:nth-child(4), .first th:nth-child(5){ width: 20%; }
+/* tr td:nth-child(3) {text-align: left;} */
+.page {margin-left: 50%; margin-bottom: 40px;}
+.btn {position: absolute; right: 3%;}
+.count {width: 90%; margin-bottom: 10px; margin-top: 20px; display: table; margin-left: auto; margin-right: auto;}
+.noResult {background-color: #f3f9fc; font-weight: bold;}

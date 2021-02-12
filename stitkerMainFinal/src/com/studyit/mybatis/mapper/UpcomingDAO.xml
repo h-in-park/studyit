@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.studyit.mybatis.IUpcomingDAO">
+	<select id="list" resultType="com.studyit.mybatis.UpcomingDTO">
+	SELECT STUDY_NAME, CLOSE_DATE,PERIOD,STUDY_CODE,PARTI_CODE,USER_CODE,ID, LEADER,WEEKDAY,LOC, START_TIME, END_TIME, PROGRESS     
+	FROM VIEW_STUDY_UPCOMING
+	<where>
+	<if test="id != null">AND ID = #{id} </if>
+	<if test="studycode != null">AND STUDY_CODE=#{studycode} </if>
+	</where>
+	</select>
+
+	<select id="nowcontents" resultType="com.studyit.mybatis.UpcomingDTO">
+	SELECT ID, WRITE_DATE, HITCOUNT, TITLE, CONTENT, STUDY_CODE 
+	FROM VIEW_STD_CONTENT	
+	</select>
+	
+	
+	<select id="weekday" resultType="java.lang.String">
+	SELECT WEEKDAY, STUDY_CODE
+	FROM VIEW_STUDY_WEEKDAY
+	WHERE STUDY_CODE=#{studycode}
+	</select>
+	
+	<select id="pgs" resultType="java.lang.Double">
+	SELECT ROUND((NOWPGS*100)/PROGRESS,1) "PGS"
+	FROM VIEW_STUDY_UPCOMING
+	WHERE STUDY_CODE =#{studycode} AND ID =#{id}
+	</select>
+</mapper>

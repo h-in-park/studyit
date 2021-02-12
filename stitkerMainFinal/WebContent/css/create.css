@@ -1,0 +1,201 @@
+@charset "UTF-8";
+
+#bbs
+{
+	width: 800px;
+	margin: 30px auto;
+	text-align: left;
+}
+
+#bbs_title
+{
+	width: 574px;
+	padding-left: 20px;
+	height: 40px;
+	border: 3px solid gray;
+	text-align: left;
+	font-weight: bold;
+	line-height: 40px;
+	font-size: 10pt;
+	margin-bottom: 30px;
+}
+
+#bbsCreated
+{
+	width: 600px;
+	overflow: visible;
+	border-top: 3px solid #DBDBDB;
+	border-bottom: 3px solid #DBDBDB;
+	text-align: left;
+}
+
+.bbsCreated_bottomLine
+{
+	height: 35px;
+	line-height: 35px;
+	border-bottom: 1px solid #DBDBDB;
+	clear: both;
+	text-align: left;
+}
+
+.bbsCreated_noLine
+{
+	height: 35px;
+	line-height: 35px;
+	clear: both;
+	text-align: left;
+}
+
+#bbsCreated_content
+{
+	height: 170px;
+	line-height: 170px;
+	border-bottom: 1px solid #DBDBDB;
+	clear: both;
+	text-align: left;
+}
+
+#bbsCreated dt
+{
+	float: left;
+	height: 35px;
+	width: 80px;
+	line-height: 35px;
+	text-align: left;
+	padding-left: 20px;
+	background-color: #EEEEEE;
+}
+
+#bbsCreated dd
+{
+	float: left;
+	height: 35px;
+	width: 440px;
+	line-height: 35px;
+	text-align: left;
+	padding-left: 10px;		
+}
+
+#bbsCreated_content dt
+{
+	float: left;
+	height: 170px;
+	width: 80px;
+	text-align: left;
+	padding-left: 20px;
+	background-color: #EEEEEE;
+}
+
+#bbsCreated_content dd
+{
+	float: left;
+	height: 170px;
+	width: 440px;
+	line-height: 170px;
+	text-align: left;
+	padding-left: 10px;		
+}
+
+#bbsCreated_footer
+{
+	width: 600px;
+	overflow: visible;
+	clear: both;
+	height: 50px;
+	line-height: 50px;
+	margin-bottom: 20px;
+	text-align: center;
+}
+
+
+#BoardType
+{
+	float: left;
+	padding-left: 20px;
+	padding-top: 100px;
+	width: 150px;
+	margin: 30px auto;
+	text-align: left;
+	font-weight: bold;
+}
+
+#BoardType a
+{
+	font-size: 10pt; 
+	font-weight: bold;  
+               
+}
+#BoardType li
+{
+	font-size: 10pt;   
+	border-bottom: 1px solid;   
+	padding-top: 10px;
+	padding-bottom: 10px;
+	                    
+}
+
+a
+{
+	cursor: pointer;
+	color: #000000;
+	text-decoration: none;
+	font-size: 9pt;
+	line-height: 150%;
+}
+
+a:hover, a:active
+{
+	font-size: 9pt;
+	color: #8000ff;
+	text-decoration: underline;
+}
+
+ul
+{
+	list-style: none;
+}
+
+/* 메뉴와 컨텐트 레이아웃, 배경색 설정 */
+.menu {float: left; background-color: white; width: 20%; min-height: 800px; border-right: 1px solid black;}
+.content {float: left; width: 80%; background-color: white; min-height: 800px;}
+
+/* footer 설정 */
+.footer {clear: left;}
+
+/* 왼쪽네비게이션 설정 */
+.menu nav ul li { list-style: none; text-align: center; margin: 20px; height: 50px; }
+.menu a { text-decoration: none; font-size: 2rem; font-weight: bold;}
+.menu a:not(.selected) {color: black; }
+.menu a:hover {color: SlateBlue;}
+.selected {color: SlateBlue;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

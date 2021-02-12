@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.studyit.mybatis.IStudy_detail_DAO">
+	
+	<select id="studyDetail" resultType="com.studyit.mybatis.Study_detail_DTO">
+		SELECT STUDY_CODE, USER_ID, STUDY_DESC, STUDY_TYPE, TO_CHAR(START_DATE, 'YYYY-MM-DD') START_DATE
+			 , TO_CHAR(END_DATE, 'YYYY-MM-DD') END_DATE, TO_CHAR(WRITE_DATE, 'YYYY-MM-DD') WRITE_DATE, HITCOUNT
+			 , MIN_MEM, MAX_MEM, STUDY_NAME, MIN_RANK, CLOSE_DATE, INTEREST_MC, LOC_MC, REC_COUNT, STATUS
+		FROM VIEW_STD_DETAIL
+		WHERE STUDY_CODE = #{study_code}
+	</select>
+	
+	<select id="weekday" resultType="com.studyit.mybatis.Study_weekday_DTO">
+		SELECT WEEKDAY_CODE, WEEKDAY, START_TIME, END_TIME
+		FROM VIEW_STD_MEETDAY
+		WHERE STUDY_CODE = #{study_code}
+		ORDER BY WEEKDAY_CODE
+	</select>
+	
+	<select id="studyCount" resultType="java.lang.Integer">
+		SELECT COUNT(*) COUNT
+		FROM STD_MEETDAY_VIEW
+		WHERE STUDY_CODE = #{study_code}
+	</select>
+	
+	<select id="applyCount" resultType="java.lang.Integer">
+		SELECT COUNT(*) COUNT
+		FROM TBL_STUDY_APPLY A LEFT JOIN TBL_STUDY_CANCEL C
+		  ON A.APPLY_CODE = C.APPLY_CODE
+		WHERE A.STUDY_CODE = #{study_code} AND C.CANCEL_CODE IS NULL AND A.APPLY_DATE IS NOT NULL
+	</select>
+	
+	<select id="applyMem" resultType="com.studyit.mybatis.Study_applyMem_DTO">
+		SELECT A.APPLY_CODE APPLY_CODE, R.ID USER_ID, NVL2(A.APPLY_DATE, 'READY', 'UNREADY') READY, P.POSITION POSITION, R.USER_CODE USER_CODE
+		FROM TBL_STUDY_APPLY A LEFT JOIN TBL_STUDY_CANCEL C
+		  ON A.APPLY_CODE = C.APPLY_CODE
+		  	JOIN TBL_STUDY_POSITION P
+		  	  ON A.POSITION_CODE = P.POSITION_CODE
+		  	JOIN TBL_USER_REGISTER R
+		  	  ON A.USER_CODE = R.USER_CODE
+		WHERE A.STUDY_CODE = #{study_code} AND C.CANCEL_CODE IS NULL
+		ORDER BY P.POSITION, A.APPLY_DATE, TO_NUMBER(SUBSTR(A.APPLY_CODE, 3))
+	</select>
+	
+	<!-- 확인 누르면 신청날짜 업데이트하기 -->
+	<update id="updateDate">
+		UPDATE TBL_STUDY_APPLY
+		SET APPLY_DATE = SYSDATE
+		WHERE APPLY_CODE = #{apply_code}
+	</update>
+	
+	<!-- 댓글개수 -->
+	<select id="commentCount" resultType="java.lang.Integer">
+		SELECT COUNT(*) COUNT
+		FROM TBL_COMMENT_STUDY
+		WHERE STUDY_CODE = #{study_code}
+	</select>
+	
+	<!-- 추천개수 -->
+	<select id="recomCount" resultType="java.lang.Integer">
+		SELECT COUNT(*) COUNT
+		FROM TBL_REC_STUDY
+		WHERE REC_CHECK = 1 AND STUDY_CODE = #{study_code}
+	</select>
+	
+	<!-- 비추천개수 -->
+	<select id="unRecomCount" resultType="java.lang.Integer">
+		SELECT COUNT(*) COUNT
+		FROM TBL_REC_STUDY
+		WHERE REC_CHECK = 2 AND STUDY_CODE = #{study_code}
+	</select>
+	
+	<!-- 댓글 조회 -->
+	<select id="comment" resultType="com.studyit.mybatis.Study_comment_DTO">
+	<![CDATA[ 	
+		SELECT RNUM, COMMENT_CODE, COMMENTS, USER_CODE, WRITE_DATE, USER_ID
+		FROM
+		(
+			SELECT ROWNUM RNUM, COMMENT_CODE, COMMENTS, USER_CODE, WRITE_DATE, USER_ID
+			FROM
+			(
+				SELECT C.COMMENT_CODE COMMENT_CODE, C.COMMENTS COMMENTS
+					 , C.USER_CODE USER_CODE, C.WRITE_DATE WRITE_DATE, R.ID USER_ID
+				FROM TBL_COMMENT_STUDY C JOIN TBL_USER_REGISTER R
+				  ON C.USER_CODE = R.USER_CODE
+				WHERE C.STUDY_CODE = #{study_code}
+				ORDER BY WRITE_DATE
+			)
+		)
+		WHERE RNUM >= #{start} AND RNUM <= #{end}
+		ORDER BY RNUM
+	]]> 		
+	</select>
+	
+	<!-- 추천등록 -->
+	<insert id = "insertRecom">
+		INSERT INTO TBL_REC_STUDY(REC_CODE, STUDY_CODE, REC_DATE, REC_CHECK, USER_CODE)
+		VALUES ('RD'||REC_STUDY_SEQ.NEXTVAL, #{study_code}, SYSDATE, 1, #{user_code})
+	</insert>
+	
+	<!-- 비추천등록 -->
+	<insert id = "insertUnRecom">
+		INSERT INTO TBL_REC_STUDY(REC_CODE, STUDY_CODE, REC_DATE, REC_CHECK, USER_CODE)
+		VALUES ('RD'||REC_STUDY_SEQ.NEXTVAL, #{study_code}, SYSDATE, 2, #{user_code})	
+	</insert>
+	
+	<!-- 댓글입력 -->
+	<insert id="insertComm">
+		INSERT INTO TBL_COMMENT_STUDY(COMMENT_CODE, STUDY_CODE, COMMENTS, USER_CODE, WRITE_DATE)
+		VALUES ('CD'||COMMENT_STUDY_SEQ.NEXTVAL, #{study_code}, #{comments}, #{user_code}, SYSDATE)
+	</insert>
+	
+	<!-- 신청프로시저 -->
+	<resultMap type="hashmap" id="applyParam"></resultMap>
+	<select id="insertApply" statementType="CALLABLE">
+		{
+			CALL PRC_STD_APPLY_INSERT(#{study_code}, #{user_code}, 'SP2')
+		}
+	</select>
+	
+	<!-- 취소(CANCEL에 INSERT) -->
+	<resultMap type="hashmap" id="cancelParam"></resultMap>
+	<select id="insertCancel" statementType="CALLABLE">
+		{
+			CALL PRC_INSERT_CANCEL(#{apply_code},  SYSDATE, NULL)
+		}
+	</select>
+	
+	<!-- 참여코드 가져오기 -->
+	<select id="getApplyCode" resultType="java.lang.String">
+		SELECT APPLY_CODE
+		FROM TBL_STUDY_APPLY
+		WHERE STUDY_CODE = #{study_code} AND USER_CODE = #{user_code}
+	</select>
+	
+	<!-- 확인버튼 클릭 -->
+	<update id="updateApplyDate">
+		UPDATE TBL_STUDY_APPLY
+		SET APPLY_DATE = SYSDATE
+		WHERE APPLY_CODE = #{apply_code}
+	</update>
+	
+	<!-- 마감날짜변경(리더) -->
+	<update id="updateEndDate">
+		UPDATE TBL_STUDY_OPEN
+		SET END_DATE = SYSDATE
+		WHERE STUDY_CODE = #{study_code}
+	</update>
+	
+	<!-- 참가에 인서트(리더) -->
+	<insert id="insertParti">
+		INSERT INTO TBL_STUDY_PARTICIPANT (PARTI_CODE, APPLY_CODE)
+		VALUES('PT'|| STUDY_PARTI_SEQ.NEXTVAL, #{apply_code})
+		
+	</insert>
+	
+	<!-- 추천여부 -->
+	<select id="checkRec" resultType="java.lang.Integer">
+		SELECT COUNT(*) COUNT
+		FROM TBL_REC_STUDY
+		WHERE STUDY_CODE = #{study_code} AND USER_CODE = #{user_code}	
+	</select>
+	
+	<!-- 신고 -->
+	
+	<!-- 댓글 가져오기 -->
+	<select id="getComm" resultType="com.studyit.mybatis.Study_comment_DTO">
+		SELECT COMMENTS, COMMENT_CODE
+		FROM TBL_COMMENT_STUDY
+		WHERE COMMENT_CODE = #{comment_code}
+	</select>
+	
+	<!-- 댓글수정 -->
+	<update id="modifyComm">
+		UPDATE TBL_COMMENT_STUDY
+		SET COMMENTS = #{comments}
+		WHERE COMMENT_CODE = #{comment_code}	
+	</update>
+	
+	<!-- 댓글삭제 -->
+	<delete id="deleteComm">
+		DELETE
+		FROM TBL_COMMENT_STUDY
+		WHERE COMMENT_CODE = #{comment_code}
+	</delete>	
+	
+	<!-- 조회수 -->
+	<update id="addHitCount">
+		UPDATE TBL_STUDY_OPEN
+		SET HITCOUNT = HITCOUNT+1
+		WHERE STUDY_CODE = #{study_code}
+		
+	</update>
+	
+	<!-- 신고 카테고리 가져오기 -->
+	<select id="getReportCtg" resultType="com.studyit.mybatis.InterviewReportDTO">
+		SELECT POST_REPORT_CTG_CODE, POST_REPORT_CTG
+		FROM TBL_POST_REPORT_CTG	
+	</select>
+	
+	<!-- 신고 등록하기 -->
+	<resultMap type="hashmap" id="reportParam"></resultMap>
+	<select id="addReport" statementType="CALLABLE">
+		{
+			CALL PRC_RPT_REG_STDOPEN_INSERT(#{post_code}, #{user_code}, #{report_reason}, #{post_report_ctg_code})
+		}
+	</select>
+	
+	<!-- 신고 여부 확인 -->
+	<select id="checkReport" resultType="java.lang.Integer">
+		SELECT COUNT(*) COUNT
+		FROM TBL_STUDY_ACCUSE
+		WHERE STUDY_CODE = #{study_code} AND USER_CODE = #{user_code}
+	</select>
+	
+	<!-- 개설자 코드 가져오기 -->
+	<select id="getWriterCode" resultType="java.lang.String">
+		SELECT USER_CODE
+		FROM TBL_STUDY_OPEN
+		WHERE STUDY_CODE = #{study_code}
+	</select>
+	
+	<!-- 신청 및 취소 여부 확인 -->
+	<select id="checkApply" resultType="java.lang.Integer">
+		SELECT COUNT(*) COUNT
+		FROM TBL_STUDY_APPLY A LEFT JOIN TBL_STUDY_CANCEL C 
+		  ON A.APPLY_CODE = C.APPLY_CODE
+		WHERE CANCEL_CODE IS NULL AND STUDY_CODE = #{study_code} AND USER_CODE = #{user_code}
+	</select>
+	
+	<!-- 참여한 스터디 중 점수적용해야 하는 스터디 목록 가져오기 -->
+	<select id="getStudyList" resultType="java.lang.String">
+	<![CDATA[ 		
+		SELECT A.STUDY_CODE STUDY_CODE
+		FROM TBL_STUDY_PARTICIPANT P LEFT JOIN TBL_STUDY_CANCEL C
+		  ON P.APPLY_CODE = C.APPLY_CODE
+		    JOIN TBL_STUDY_APPLY A
+		      ON A.APPLY_CODE = P.APPLY_CODE
+		        JOIN TBL_STUDY_OPEN O
+		          ON O.STUDY_CODE = A.STUDY_CODE
+		WHERE C.CANCEL_CODE IS NULL AND A.USER_CODE = #{user_code} AND O.ASSESS_CHECK IS NULL AND O.END_DATE+14 <= SYSDATE	
+	]]>			
+	</select>
+	
+	<!-- 해당 스터디에 참여한 사용자코드 목록 가져오기 --> 
+	<select id="getUserList">
+		SELECT A.USER_CODE USER_CODE
+		FROM TBL_STUDY_PARTICIPANT P LEFT JOIN TBL_STUDY_CANCEL C
+		  ON P.APPLY_CODE = C.APPLY_CODE
+		    JOIN TBL_STUDY_APPLY A
+		      ON A.APPLY_CODE = P.APPLY_CODE
+		WHERE C.CANCEL_CODE IS NULL AND STUDY_CODE = #{study_code}	
+	</select>
+	
+	<!-- 평가 토대로 점수 적용 -->
+	<resultMap type="hashmap" id="scoreParam"></resultMap>
+	<select id="addScore" statementType="CALLABLE">
+		{
+			CALL PR_2WEEKS_CHK(#{study_code}, SYSDATE, #{user_code})
+		}
+	</select>
+	
+	<update id="updateStudyAssess">
+		UPDATE TBL_STUDY_OPEN
+		SET ASSESS_CHECK = 1
+		WHERE STUDY_CODE = #{study_code}
+	</update>
+	
+	
+	
+</mapper>

@@ -1,0 +1,166 @@
+/* 메뉴와 컨텐트 레이아웃, 배경색 설정 */
+.menu {float: left; background-color: white; width: 20%; min-height: 800px; border-right: 1px solid black;}
+
+/* footer 설정 */
+.footer {clear: left;}
+
+/* 왼쪽네비게이션 설정 */
+.menu nav ul li { list-style: none; text-align: left; margin: 10px; height: 50px; }
+.menu a { text-decoration: none; font-size: 15px; font-weight: bold;}
+.menu a:not(.selected) {color: black; }
+.menu a:hover {color: SlateBlue;}
+.selected {color: SlateBlue;}
+
+.main-content
+{
+	min-height: 800px;
+}
+
+.main
+{
+	width: 80%;
+	margin-left: 10px;
+ 	margin: 0px auto; 
+}
+
+.table {margin-left:auto; margin-right:auto;}
+
+
+#table1
+{
+	width: 80%;
+	font-size: 9pt;
+	margin-bottom: 10px;
+	border-bottom: 0px solid #ffffff;
+}
+
+
+#table1 td:nth-child(1){text-align: right;}
+
+
+#table2
+{
+	width: 80%;
+	font-size: 9pt;
+	margin-bottom: 40px;
+	height: 900px;
+}
+
+
+#btnSet
+{
+	margin-bottom: 30px;
+}
+
+#BoardType
+{
+	float: left;
+}
+
+#BoardType li
+{
+	font-size: 10pt;   
+	border-bottom: 1px solid;   
+	padding-top: 10px;
+	padding-bottom: 10px;
+	font-weight: bold;
+	                    
+}
+
+ul
+{
+	list-style: none;
+	text-align: left;
+}
+
+#BoardMenu 
+{
+	padding-left: 200px;
+	width: 800px;
+	text-align: right;
+} 
+
+a
+{
+	cursor: pointer;
+	color: #000000;
+	text-decoration: none;
+	line-height: 150%;
+}
+
+a:hover, a:active
+{
+	color: #8000ff;
+	text-decoration: underline;
+}
+
+#BoardList_title
+{
+	width: 664px; /* 690 - (padding-left + border: 3px + border:3px) */
+	height: 40px;
+	text-align: left;
+	font-weight: bold;
+	line-height: 40px;
+	font-size: 20pt;
+	margin-bottom: 30px;
+	margin-left: 200px;
+}
+
+#BoardList
+{
+	float: right;
+	width: 800px;
+	margin: 30px auto;
+	text-align: left;
+	padding-right: 250px;
+}
+#BoardList_header
+{
+	height: 27px;
+
+}
+
+#BoardList_header #leftHeader
+{
+
+
+	text-align: left;
+}
+
+#BoardList_header #rightHeader
+{
+
+	width: 150px;
+	text-align: right
+}
+
+#BoardList_header .selectField
+{
+	border: 1px solid;
+	border-color: #000000;
+	background-color: #ffffff;
+	font-family: '굴림';
+	font-size: 7pt;
+	height: 20px
+}
+
+#BoardList_header .textField
+{
+	border: 1px solid;
+	height: 13px;
+	padding: 2px 2px 2px 2px;
+	border-color: #000000;
+	background-color: #ffffff;
+	font-family: '굴림';
+	font-size: 9pt;
+}
+
+#footer
+{
+	margin-bottom: 30px;
+}
+
+
+
+
+

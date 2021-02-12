@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper 
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  
+<mapper namespace="com.studyit.mybatis.IFindPwDAO">
+		
+		<select id="rndPw" resultType="java.lang.String">
+			SELECT DBMS_RANDOM.STRING('A', 10) AS RNDSTR
+			FROM DUAL
+		</select>
+		
+		<select id="questionList" resultType="com.studyit.mybatis.FindPwQueDTO">
+			SELECT PW_SRCH_QUE_CODE AS QUECODE, PW_SRCH_QUE AS QUESTION
+			FROM TBL_PW_SEARCH_QUE
+			ORDER BY TO_NUMBER(SUBSTR(PW_SRCH_QUE_CODE, 3))
+		</select>
+		
+		<update id="updatePw">
+			UPDATE TBL_USER_REGISTER
+			SET PW = CRYPTPACK.ENCRYPT(#{rndStr}, #{rndStr})
+			WHERE ID = #{userId}
+		</update>
+		
+		<select id="findPwByEmail" resultType="com.studyit.mybatis.FindPwQueDTO">
+			SELECT ID, EMAIL
+			FROM TBL_USER_REGISTER
+			WHERE ID = #{userId}
+		</select>		
+		 
+		<select id="findPwByQna" resultType="com.studyit.mybatis.FindPwQueDTO">
+			SELECT USERID, QUECODE, ANSWER
+			FROM VIEW_PW_QNA
+			WHERE USERID = #{userId}
+		</select>
+		
+</mapper>

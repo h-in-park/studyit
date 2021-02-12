@@ -1,0 +1,69 @@
+@charset "UTF-8";
+.content_Table 
+{
+	display: table;
+	margin: 0px auto;
+}
+.content_Row 
+{
+	display: table-row;
+}
+.content_Cell 
+{
+	display: table-cell;
+	width: 400px;
+	text-align: center;
+	padding: 18px;
+}
+.boldCell 
+{
+	font-size: xx-large;
+	font-weight: bold;
+}
+.footer2  .boldCell 
+{
+	font-size: x-large;
+	font-weight: bold;
+}
+.content_TableBody 
+{
+	display: table-row-group;
+}
+
+#table1 a, .container a
+{
+	text-decoration: none;
+	color: #000000;
+}
+
+h1 
+{
+	padding-left: 20px;
+	font-size: 25pt;
+}
+h1>#highlight 
+{
+	color: SlateBlue;
+	font-weight: bold;
+}
+h1>#titlea 
+{
+	font-size: 20pt;
+}
+h1>span 
+{
+	font-size: 30pt;
+}
+
+.btn {
+	font-size: 9pt;
+}
+small 
+{
+	font-size: 10pt;
+}
+.table2 h2>span 
+{
+	color: SlateBlue;
+	font-weight: bold;
+}

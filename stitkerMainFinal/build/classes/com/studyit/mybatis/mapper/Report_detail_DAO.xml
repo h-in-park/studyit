@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.studyit.mybatis.IReport_detail_DAO">
+
+<select  id="list" resultType="com.studyit.mybatis.Report_detail_DTO">	
+	SELECT ROWNUM RNUM, POST_REPORT_CTG REPORT_CTG, REPORT_REASON, REPORT_DATE, REPORT_ID, REPORT_USER_CODE
+	FROM VIEW_RH_REPORTLIST
+	WHERE POST_CODE = #{post_code}
+</select>
+
+<select id="memList" resultType="com.studyit.mybatis.Report_detail_DTO">
+	SELECT ROWNUM RNUM, REPORT_CTG, REPORT_REASON, REPORT_ID, REPORT_DATE, REPORT_CODE, REPORT_USER_CODE
+	FROM RH_MEM_REPORTLIST_VIEW
+	WHERE REPORTED_CODE = #{reported_parti_code}
+</select>
+
+</mapper>

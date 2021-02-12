@@ -1,0 +1,249 @@
+@charset "UTF-8";
+*
+{
+	margin: 0px;
+	padding: 0px;
+}
+
+body
+{
+	font-size: 9pt;
+	font-family: 돋움;
+}
+
+a
+{
+	cursor: pointer;
+	color: #000000;
+	text-decoration: none;
+	font-size: 9pt;
+	line-height: 150%;
+}
+
+a:hover, a:active
+{
+	font-size: 9pt;
+	color: #8000ff;
+	text-decoration: underline;
+}
+
+ul
+{
+	list-style: none;
+}
+
+#BoardType
+{
+	float: left;
+	padding-left: 20px;
+	padding-top: 100px;
+	width: 150px;
+	margin: 30px auto;
+	text-align: left;
+	font-weight: bold;
+}
+
+#BoardType a
+{
+	font-size: 10pt; 
+	font-weight: bold;  
+               
+}
+#BoardType li
+{
+	font-size: 10pt;   
+	border-bottom: 1px solid;   
+	padding-top: 10px;
+	padding-bottom: 10px;
+	                    
+}
+
+#BoardMenu
+{
+	float: right;
+	padding-right: 250px;
+	padding-top: 10px;
+	width: 690px;
+	text-align: right;
+}
+
+#BoardList
+{
+	float: right;
+	width: 750px;
+	margin: 30px auto;
+	text-align: left;
+	padding-right: 250px;
+}
+
+#BoardList_title
+{
+	width: 664px; /* 690 - (padding-left + border: 3px + border:3px) */
+	height: 40px;
+	text-align: left;
+	font-weight: bold;
+	line-height: 40px;
+	font-size: 20pt;
+	margin-bottom: 30px;
+}
+
+#BoardList_header
+{
+	height: 27px;
+
+}
+
+#BoardList_header #leftHeader
+{
+	float: left;
+	width: 600px;
+	text-align: left;
+}
+
+#BoardList_header #rightHeader
+{
+	float: right;
+	width: 150px;
+	text-align: right
+}
+
+#BoardList_header .selectField
+{
+	border: 1px solid;
+	border-color: #000000;
+	background-color: #ffffff;
+	font-family: '굴림';
+	font-size: 7pt;
+	height: 20px
+}
+
+#BoardList_header .textField
+{
+	border: 1px solid;
+	height: 13px;
+	padding: 2px 2px 2px 2px;
+	border-color: #000000;
+	background-color: #ffffff;
+	font-family: '굴림';
+	font-size: 9pt;
+}
+
+#BoardList_list
+{
+	clear: both;
+}
+
+#BoardList_list dd
+{
+	float: left;
+	height: 27px;
+	line-height: 27px;
+	text-align: center;
+	
+}
+
+#BoardList_list #head
+{
+	height: 30px;
+	border-top: 2px solid #000000;
+	border-bottom: 2px solid #000000;
+	background-color: #ffffff;
+	
+}
+
+#BoardList_list #head dl
+{
+	height: 27px;
+}
+
+
+#BoardList_list #head dt
+{
+	float: left;
+	line-height: 34px;
+	text-align: center;
+}
+
+#BoardList_list .num {width: 50px;}
+#BoardList_list .subject {width: 60px;}
+#BoardList_list .title {width: 230px;}
+#BoardList_list .name {width: 90px;}
+#BoardList_list .created {width: 65px;}
+#BoardList_list .started {width: 70px;}
+#BoardList_list .ended {width: 70px;}
+#BoardList_list .likeCount{width: 55px;}
+#BoardList_list .hitCount{width: 55px;}
+
+#BoardList_list
+{
+	clear: both;
+}
+
+#BoardList_list #lists dl
+{
+	float: left;	
+	border-bottom: 1px solid #000000;
+	
+}
+
+#BoardList_list #lists dd.created{font-size: 7pt;}
+#BoardList_list #lists dd.started{font-size: 7pt;}
+#BoardList_list #lists dd.ended{font-size: 7pt;}
+
+
+#BoardList_list dd.title
+{
+	width: 220px;
+	margin-left: 10px;
+	text-align: left;
+}
+	
+#BoardList_list a
+{
+	line-height: 27px;
+}
+
+#BoardList_list #footer
+{
+	clear: both;
+	height: 32px;
+	line-height: 32px;
+	margin-top: 5px;
+	text-align: center;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.studyit.mybatis.IMystudyDAO">
+
+	<select id="nowlist" resultType="com.studyit.mybatis.MystudyDTO">
+	<!-- SELECT ROWNUM AS "RNUM", SUBSTR(STUDY_CODE,3) STUDY_NUM, ID, LOC, STUDY_NAME, CLOSE_DATE, PERIOD, STUDY_CODE, USER_CODE, WEEKDAY, START_TIME,END_TIME, PROGRESS, NOWPGS,LEADER
+	FROM VIEW_STUDY_NOW
+	WHERE ID=#{id} -->
+	SELECT RNUM,STUDY_NUM, LOC, STUDY_NAME, CLOSE_DATE, PERIOD, STUDY_CODE, PARTI_CODE, USER_CODE, ID, LEADER, WEEKDAY, START_TIME, END_TIME
+	FROM
+	(
+	SELECT ROWNUM AS RNUM, SUBSTR(STUDY_CODE,3) STUDY_NUM, LOC, STUDY_NAME, CLOSE_DATE, PERIOD, STUDY_CODE, PARTI_CODE, USER_CODE, ID, LEADER, WEEKDAY, START_TIME, END_TIME
+	FROM VIEW_STUDY_NOW
+	WHERE ID =#{id} 
+	)
+	</select>
+
+	<select id="endlist" resultType="com.studyit.mybatis.MystudyDTO">
+	SELECT RNUM,  SUBSTR(STUDY_CODE,3) STUDY_NUM, ID,LOC, STUDY_NAME,CLOSE_DATE,PERIOD,USER_CODE,STUDY_CODE,PARTI_CODE,WEEKDAY,END_TIME,LEADER
+	FROM VIEW_STUDY_END
+	WHERE ID=#{id}
+	ORDER BY RNUM
+	</select>
+	
+	<select id="cancellist" resultType="com.studyit.mybatis.MystudyDTO">
+	SELECT ROWNUM AS "RNUM", SUBSTR(STUDY_CODE,3) STUDY_NUM,  CANCEL_CODE, AUTO_CANCEL, STUDY_CODE, STUDY_NAME, ID, CANCEL_DATE, PERIOD, LEADER
+    FROM VIEW_STUDY_CANCEL
+    WHERE ID = #{id}
+	</select>
+
+	<select id="upcominglist" resultType="com.studyit.mybatis.MystudyDTO">
+	SELECT RNUM, STUDY_NAME,  SUBSTR(STUDY_CODE,3) STUDY_NUM,LOC, CLOSE_DATE, PERIOD, STUDY_CODE, PARTI_CODE, USER_CODE,ID, LEADER,WEEKDAY, START_TIME, END_TIME, PROGRESS     
+	FROM VIEW_STUDY_UPCOMING 
+	WHERE ID = #{id}
+	</select>
+
+	<select id="nowcount" resultType="java.lang.Integer">
+	SELECT COUNT(*) AS COUNT
+	FROM VIEW_STUDY_NOW
+	WHERE ID=#{id }
+	</select>
+	
+	<select id="upcomingcount" resultType="java.lang.Integer">
+	SELECT COUNT(*) AS COUNT
+	FROM VIEW_STUDY_UPCOMING
+	WHERE ID = #{id} 
+	</select>
+	
+	<select id="endcount" resultType="java.lang.Integer">
+	SELECT COUNT(*) AS COUNT
+	FROM VIEW_STUDY_END
+	WHERE ID=#{id}
+	</select>
+	
+	<select id="cancelcount" resultType="java.lang.Integer">
+	SELECT COUNT(*) AS COUNT
+	FROM VIEW_STUDY_CANCEL
+	WHERE ID=#{id} 
+	</select>
+
+</mapper>

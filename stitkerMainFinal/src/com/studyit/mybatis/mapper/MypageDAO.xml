@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.studyit.mybatis.IMypageDAO">
+	
+	<select id="myInfo" resultType="com.studyit.mybatis.MyInfoDTO">
+		SELECT USER_CODE
+	    , INTEREST_LC_CODE, INTEREST_MC_CODE, INTEREST_MC
+	    , LOC_LC_CODE, LOC_MC_CODE, LOC_MC
+	    , JOB_LC_CODE, JOB_MC_CODE, JOB_MC
+	    , EMAIL, NAME
+	    , TO_CHAR(REGDATE, 'YYYY-MM-DD') AS REGDATE
+	    , STUDY_TYPE_CODE, STUDY_TYPE, SSN
+		FROM VIEW_MYINFO
+		WHERE USER_CODE = #{user_code}
+	</select>
+	
+	<update id="updateInfo">
+		UPDATE TBL_USER_REGISTER
+		SET INTEREST_MC_CODE = #{interest_mc_code}, LOC_MC_CODE = #{loc_mc_code}, JOB_MC_CODE = #{job_mc_code}, EMAIL = #{email}, STUDY_TYPE_CODE = #{study_type_code}
+		WHERE USER_CODE = #{user_code}
+	</update>
+	
+	<select id="myPassword" resultType="java.lang.String">
+		SELECT CRYPTPACK.DECRYPT(PW, #{password})
+		FROM TBL_USER_REGISTER
+		WHERE USER_CODE = #{user_code}
+	</select>
+	
+	<update id="updatePw">
+		UPDATE TBL_USER_REGISTER
+		SET PW = CRYPTPACK.ENCRYPT(#{password}, #{password})
+		WHERE USER_CODE = #{user_code}
+	</update>
+	
+	<select id="myscore" resultType="com.studyit.mybatis.MyScoreDTO">
+		SELECT USER_CODE, MYSCORE
+		     , CASE WHEN MYRANK = 1 THEN '숲(1등급)' 
+		            WHEN MYRANK = 2 THEN '나무(2등급)' 
+		            WHEN MYRANK = 3 THEN '열매(3등급)' 
+		            WHEN MYRANK = 4 THEN '꽃(4등급)' 
+		            WHEN MYRANK = 5 THEN '새싹(5등급)' 
+		            WHEN MYRANK = 6 THEN '씨앗(6등급)' 
+		       ELSE '-1' END MYRANK, PERCENTAGE
+		FROM VIEW_MY_SCORE_RANK_PERCENT
+		WHERE USER_CODE = #{user_code}
+	</select>
+	
+	<select id="withdrawCategory" resultType="com.studyit.mybatis.WithdrawalCategoryDTO">
+		SELECT WDL_CTG_CODE, WDL_CTG
+		FROM TBL_WITHDRAWAL_CATEGORY
+		ORDER BY 1
+	</select>
+	
+	<insert id="withdraw">
+		INSERT INTO TBL_WITHDRAWAL_INFO(WDL_CODE, WDL_DATE, WDL_CTG_CODE, SSN, USER_CODE, WDL_REASON)
+		VALUES('WI'||WDL_INFO_SEQ.NEXTVAL, SYSDATE, #{wdl_ctg_code}, #{ssn}, #{user_code}, #{wdl_reason})
+	</insert>
+	
+	<select id="mySsn" resultType="java.lang.String">
+		SELECT CRYPTPACK.DECRYPT(SSN, #{ssn})
+		FROM TBL_USER_REGISTER
+		WHERE USER_CODE = #{user_code}
+	</select>
+</mapper>

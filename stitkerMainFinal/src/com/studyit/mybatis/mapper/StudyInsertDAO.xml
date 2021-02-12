@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<!-- ○ mapper 엘리먼트의 『namespace="패키지경로가 포함된 인터페이스"』 -->
+<!--    - 인터페이스 내부에 메소드명 선언이 되어 있어야 한다. -->
+<!--    - 메소드명과 『id="식별자"』가 일치해야 한다. -->
+<mapper namespace="com.studyit.mybatis.IStudyWriteDAO">
+
+	 <!-- ○ 쿼리 내부에 있느 컬럼명의 정보가 -->
+	 <!--    자료형 클래스(DTO) 멤버 변수(속성)와 일치하는 경우 -->
+	 <!--    자동 매핑이 이루어진다. -->
+	 <resultMap type="hashmap" id="param"></resultMap>
+	 <insert id="studyOpenAdd" statementType="CALLABLE">
+	 	{
+        	CALL PRC_STD_OPEN_INSERT(#{study_name}, #{study_desc}, #{interest_mc_code}
+        							, #{study_type_code}, TO_DATE(#{start_date}, 'YYYY-MM-DD'), TO_DATE(#{end_date}, 'YYYY-MM-DD')
+        							, #{loc_mc_code}, #{min_mem_code}, #{max_mem_code}, #{min_rank}, #{user_code}, #{study_code, mode=OUT, jdbcType=VARCHAR}
+        							)
+        							
+        						
+    	}
+	 </insert>
+	 
+	 <resultMap type="hashmap" id="param2"></resultMap>
+	 <insert id="meetDayAdd" statementType="CALLABLE">
+		 	{
+		 		CALL PRC_STD_MEETDAY_INSERT(#{study_code}, #{weekday_code}, #{start_time}, #{end_time})
+		 	}
+	 </insert>
+	 
+	 <update id="modify">
+	 	UPDATE TBL_STUDY_OPEN
+	 	SET STUDY_NAME = #{study_name}, STUDY_DESC=#{study_desc}, INTEREST_MC_CODE=#{interest_mc_code}, STUDY_TYPE_CODE=#{study_type_code}
+	 		, START_DATE = #{start_date}, END_DATE = #{end_date}, LOC_MC_CODE=#{loc_mc_code}
+	 		, MAX_MEM_CODE=#{max_mem_code} 
+	 	WHERE STUDY_CODE = #{study_code}
+	 </update>
+	 
+	 <delete id="deleteMeetday">
+	 	DELETE
+	 	FROM TBL_STUDY_MEETDAY
+	 	WHERE STUDY_CODE = #{study_code}
+	 </delete>
+	 
+	 <select id="searchStudy" resultType="com.studyit.mybatis.StudyWriteDTO">
+		SELECT O.STUDY_NAME STUDY_NAME, O.STUDY_DESC STUDY_DESC, O.INTEREST_MC_CODE INTEREST_MC_CODE, O.STUDY_TYPE_CODE STUDY_TYPE_CODE
+			 , TO_CHAR(O.START_DATE, 'YYYY-MM-DD') START_DATE, TO_CHAR(O.END_DATE, 'YYYY-MM-DD') END_DATE, M.LOC_LC_CODE LOC_LC_CODE
+			 , M.LOC_MC_CODE LOC_MC_CODE, O.MIN_MEM_CODE MIN_MEM_CODE, O.MAX_MEM_CODE MAX_MEM_CODE, O.MIN_RANK MIN_RANK, O.USER_CODE USER_CODE
+		FROM TBL_STUDY_OPEN O JOIN TBL_LOC_MC M
+		  ON O.LOC_MC_CODE = M.LOC_MC_CODE
+		WHERE O.STUDY_CODE = #{study_code}
+	 </select>
+	 
+	 <select id="searchMeetday" resultType="com.studyit.mybatis.MeetdayDTO">
+	 	SELECT WEEKDAY_CODE, START_TIME, END_TIME
+		FROM TBL_STUDY_MEETDAY 
+		WHERE STUDY_CODE = #{study_code}
+	 </select>
+	
+</mapper>

@@ -1,0 +1,56 @@
+@charset "UTF-8";
+	/* 
+	·Login.jsp(로그인)
+	
+    ·Find_id(아이디 찾기)
+    
+    ·Find_id_result(아이디 찾기 결과)
+    
+    ·Find_pw(비밀번호 찾기)
+    
+    ·Find_pw_result(비밀번호 찾기 결과)
+    
+      페이지 공통 CSS 
+    */
+    .main-content
+    {
+    	min-height: 700px;
+    }
+	.login
+	{
+		border: 1px solid #ccc;
+		border-radius: 5px;
+		width: 350px;
+		padding: 15px;
+		margin: 30px;
+		margin:0 auto; 
+	}
+	.login h5
+	{
+		margin: 0px; 
+		margin-bottom: 15px;
+	}
+	small
+	{
+		font-weight: normal;
+		font-size: 10pt;
+	}
+	.divTop
+	{
+		border-bottom: 1px solid #ccc;
+	}
+	.divBot
+	{
+		border-top: 1px solid #ccc;
+		padding-top: 15px;
+	}
+	.divBot a
+	{
+		text-decoration: none;
+		color: gray;
+	}
+	.divBot a:hover
+	{
+		color: SlateBlue;
+		font-weight: bold;
+	}

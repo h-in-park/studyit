@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.studyit.mybatis.IInterviewDAO">
+
+	<select id="list" resultType="com.studyit.mybatis.InterviewDTO">
+			SELECT POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, HITCOUNT, TITLE, CONTENT, REC, INTEREST_MC, ID
+			FROM 
+			(
+			    SELECT ROWNUM POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, HITCOUNT, TITLE, CONTENT, REC, INTEREST_MC, ID
+			    FROM
+			    (
+			        SELECT POST_CODE, USER_CODE, WRITE_DATE, HITCOUNT, TITLE, CONTENT, REC, INTEREST_MC, ID
+			        FROM VIEW_BOARD_INTERVIEW
+			        WHERE ${searchKey} LIKE '%'||'${searchValue}'||'%' AND INTEREST_MC LIKE '%'||'${searchCategory}'||'%'
+			        ORDER BY WRITE_DATE
+			    )
+			)
+			WHERE POST_NUM BETWEEN #{start} AND #{end}
+			ORDER BY POST_NUM DESC
+	</select>
+	
+	<!-- 오타~!!! -->
+	<!-- <select id="count" resultType="java.langInteger"> -->
+	<select id="count" resultType="java.lang.Integer">
+		SELECT COUNT(*) AS COUNT
+		FROM VIEW_BOARD_INTERVIEW
+		WHERE ${searchKey} LIKE '%'||'${searchValue}'||'%' AND INTEREST_MC LIKE '%'||'${searchCategory}'||'%'
+	</select>
+	
+	<select id ="interestlist" resultType="com.studyit.mybatis.InterviewDTO">
+		SELECT INTEREST_MC, INTEREST_MC_CODE
+		FROM VIEW_INTEREST
+	</select>
+		
+	<insert id="add">
+		INSERT INTO TBL_BOARD_INTERVIEW(POST_CODE, USER_CODE,HITCOUNT, TITLE, CONTENT, INTEREST_MC_CODE)
+		VALUES('BV'||BOARD_INFORM_SEQ.NEXTVAL, #{user_code}, 0, #{title}, #{content}, #{interest_mc_code})
+	</insert>
+	
+	<select id ="searchlist" resultType="com.studyit.mybatis.InterviewDTO">
+		SELECT POST_NUM, ID, WRITE_DATE, HITCOUNT, TITLE, CONTENT, REC, NOTREC, INTEREST_MC, POST_CODE, USER_CODE 
+		FROM VIEW_BOARD_INTERVIEW
+		WHERE POST_CODE = #{post_code}
+	</select>
+	
+	<update id="hitcount">
+		UPDATE TBL_BOARD_INTERVIEW
+		SET HITCOUNT = HITCOUNT+1
+		WHERE POST_CODE = #{post_code}
+	
+	</update>
+	
+	<insert id="addComment">
+		INSERT INTO TBL_COMMENT_INTERVIEW(COMMENT_CODE, POST_CODE, COMMENTS, USER_CODE, WRITE_DATE)
+		VALUES('CC'||COMMENT_INTERVIEW_SEQ.NEXTVAL, #{param1}, #{param3}, #{param2},SYSDATE)
+	</insert>
+	
+	<delete id="remove">
+		DELETE
+		FROM TBL_BOARD_INTERVIEW
+		WHERE POST_CODE=#{post_code}
+	</delete>
+
+	<select id="commentlist" resultType="com.studyit.mybatis.InterviewCommentDTO">
+		SELECT COMMENT_CODE, POST_CODE, COMMENTS, USER_CODE, WRITE_DATE, ID
+		FROM VIEW_COMMENT_INTERVIEW
+		WHERE POST_CODE = #{post_code}
+		ORDER BY TO_NUMBER(SUBSTR(COMMENT_CODE, 3))
+	</select>
+	
+	<insert id="addRec">
+		INSERT INTO TBL_REC_INTERVIEW(REC_CODE,POST_CODE,USER_CODE,REC_CHECK)
+		VALUES('RC'||REC_INTERVIEW_SEQ.NEXTVAL,#{param1}, #{param2},1)
+	
+	</insert>
+	
+	<insert id="addNotRec">
+		INSERT INTO TBL_REC_INTERVIEW(REC_CODE,POST_CODE,USER_CODE,REC_CHECK)
+		VALUES('RC'||REC_INTERVIEW_SEQ.NEXTVAL,#{param1}, #{param2},2)
+	
+	</insert>
+	
+	<select id="recCheck" resultType="java.lang.Integer">
+		SELECT COUNT(*) COUNT
+		FROM TBL_REC_INTERVIEW
+		WHERE USER_CODE= #{param2} AND POST_CODE = #{param1}
+	</select>
+	
+	<select id="reportctg" resultType="com.studyit.mybatis.InterviewReportDTO">
+		SELECT POST_REPORT_CTG_CODE, POST_REPORT_CTG
+		FROM TBL_POST_REPORT_CTG
+	</select>
+	
+	
+	<resultMap type="hashmap" id="param"></resultMap>
+	<select id="insertReport" statementType="CALLABLE">
+		{
+			CALL PRC_RPT_REG_INTERV_INSERT(#{post_code},#{user_code},#{report_reason},#{post_report_ctg_code})
+		}
+	</select>
+	
+	<select id="chkReport" resultType="java.lang.Integer">
+		SELECT COUNT(*) AS COUNT
+		FROM TBL_REPORT_REG_INTERVIEW
+		WHERE POST_CODE =#{post_code} AND USER_CODE = #{user_code}
+	</select>
+	
+	<update id="interviewModify">
+		UPDATE TBL_BOARD_INTERVIEW
+		SET TITLE = #{param2} , CONTENT = #{param4}, INTEREST_MC_CODE = #{param3}
+		WHERE POST_CODE = #{param1}
+	</update>
+	
+	<select id="commentCnt" resultType="java.lang.Integer">
+		SELECT COUNT(*) COUNT
+        FROM TBL_COMMENT_INTERVIEW
+        WHERE POST_CODE = #{post_code}	
+	</select>
+	
+	<select id="getComm" resultType="java.lang.String">
+		SELECT COMMENTS
+		FROM TBL_COMMENT_INTERVIEW
+		WHERE COMMENT_CODE = #{comment_code}
+	</select>
+	
+	<update id="modifyComm">
+		UPDATE TBL_COMMENT_INTERVIEW
+		SET COMMENTS = #{comments}
+		WHERE COMMENT_CODE = #{comment_code}		
+	</update>
+	
+	<delete id="deleteComm">
+		DELETE
+		FROM TBL_COMMENT_INTERVIEW
+		WHERE COMMENT_CODE = #{comment_code}	
+	</delete>
+	
+</mapper>

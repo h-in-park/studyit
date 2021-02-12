@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.studyit.mybatis.IParticipant_report_list_DAO">
+
+<select id="list" resultType="com.studyit.mybatis.Participant_report_list_DTO">
+	<![CDATA[ 
+	SELECT RNUM, STUDY_NAME, NVL(HANDLE_RESULT,'미처리') HANDLE_RESULT, REPORTED_ID, HANDLE_CODE, REPORTED_PARTI_CODE, REPORTED_USER_CODE
+	FROM RH_STUDYMEM_VIEW
+	WHERE RNUM >= #{start2 } AND RNUM <= #{end2 }
+	ORDER BY RNUM DESC
+	]]>
+</select>
+
+<select id="countUntreat" resultType="java.lang.Integer">	
+	SELECT COUNT(*) AS COUNT
+	FROM RH_STUDYMEM_VIEW
+	WHERE HANDLE_RESULT IS NULL
+</select>
+
+<select id="countAll" resultType="java.lang.Integer">
+	SELECT COUNT(*)
+	FROM RH_STUDYMEM_VIEW
+</select>
+
+</mapper>

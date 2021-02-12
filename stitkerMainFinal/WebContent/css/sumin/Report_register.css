@@ -1,0 +1,13 @@
+@charset "UTF-8";
+
+/* 신고사유 위치 설정 */
+.textArea { width: 350px; height: 200px; margin-left: 10px;}
+
+/* 테이블 모양,크기,색 설정 */
+.table {width: 300px; height: 150px;}
+.contents {width: 350px; margin-left: 20px;}
+
+/* 버튼, 알림메시지, 선택사항 크기 설정 */
+.btn { margin-left: 150px;}
+.message {font-size: small; color: blue;}
+.title {font-weight: bold;}

@@ -1,0 +1,11 @@
+@charset "UTF-8";
+
+/*신고사유 테이블 설정*/
+.table { width: 90%; height: 80%; margin-right: auto; margin-left: auto;}
+tr:not(.reason) {text-align: center;}
+.category {font-size: 20pt; padding: 15px; font-weight: bold;}
+.reasonSpan {margin-left: 23%; color: tomato;}
+
+/* 버튼 설정 */
+.content {padding-bottom: 100px;}
+.buttons {position: absolute; right:4%;}

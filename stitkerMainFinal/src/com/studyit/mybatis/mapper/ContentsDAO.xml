@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.studyit.mybatis.IContentsDAO">
+
+	<select id="contentslist" resultType="com.studyit.mybatis.ContentsDTO">
+	<!-- SELECT ROWNUM AS RNUM, CONTENT_CODE, STUDY_CODE, WRITE_DATE, HITCOUNT, TITLE, CONTENT, ID
+	FROM VIEW_STD_CONTENT
+	WHERE STUDY_CODE = #{studycode} -->
+	<![CDATA[
+	SELECT RNUM , ID, CONTENT_CODE, STUDY_CODE , WRITE_DATE, HITCOUNT, TITLE, CONTENT
+	FROM (SELECT ROWNUM RNUM ,CONTENT_CODE, ID, WRITE_DATE, HITCOUNT
+	      , TITLE, CONTENT, STUDY_CODE  FROM VIEW_STD_CONTENT
+	       WHERE STUDY_CODE =#{studycode} ORDER BY RNUM DESC)
+	WHERE RNUM >=#{start} AND RNUM <=#{end}
+	 ]]>
+	</select>
+		
+	<insert id="add">
+	INSERT INTO TBL_STUDY_CONTENT(CONTENT_CODE, PARTI_CODE, WRITE_DATE, HITCOUNT, TITLE, CONTENT)
+	VALUES('CT'|| STUDY_CON_SEQ.NEXTVAL, #{parti_code}, SYSDATE, 0, #{title}, #{content}) 
+	</insert>
+	
+	
+	<update id="modify">
+	UPDATE TBL_STUDY_CONTENT
+	SET TITLE=#{title}, CONTENT=#{content}
+	WHERE CONTENT_CODE = #{content_code}
+	</update>
+	
+	
+	<delete id="remove">
+	DELETE 
+	FROM TBL_STUDY_CONTENT
+	WHERE CONTENT_CODE = #{content_code}
+	</delete>
+
+	<select id="detail" resultType="com.studyit.mybatis.ContentsDTO">
+	SELECT RNUM, ID,CONTENT_CODE, STUDY_CODE , WRITE_DATE, HITCOUNT, TITLE, CONTENT
+	FROM
+	(SELECT ROWNUM RNUM ,CONTENT_CODE, ID, WRITE_DATE, HITCOUNT, TITLE, CONTENT, STUDY_CODE  FROM VIEW_STD_CONTENT WHERE STUDY_CODE =#{studycode})
+	WHERE CONTENT_CODE=#{contentcode} 
+	</select>
+
+
+	<update id="hitcount">
+	UPDATE TBL_STUDY_CONTENT
+	SET HITCOUNT = HITCOUNT+1
+	WHERE CONTENT_CODE = #{contentcode}
+	</update>
+	
+	
+	<select id="particode" resultType="java.lang.String">
+	<!-- SELECT DISTINCT PARTI_CODE AS PARTI_CODE FROM VIEW_STD_CONTENT 
+	WHERE STUDY_CODE =#{studycode} AND ID=#{id} -->
+	SELECT PARTI_CODE
+	FROM VIEW_PARTI_CODE
+	WHERE STUDY_CODE = #{studycode}  AND ID=#{id}
+	</select>
+	 
+	<select id="update" resultType="com.studyit.mybatis.ContentsDTO">
+	SELECT TITLE, CONTENT
+	FROM VIEW_STD_CONTENT
+	WHERE CONTENT_CODE =#{contentcode}
+	</select>
+	
+	<select id="count" resultType="java.lang.Integer">
+	SELECT COUNT(*) AS COUNT
+	FROM VIEW_STD_CONTENT
+	WHERE STUDY_CODE =#{studycode}
+	</select>
+	
+	
+	
+</mapper>

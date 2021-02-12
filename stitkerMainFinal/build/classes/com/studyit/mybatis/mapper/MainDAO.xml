@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper 
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  
+<mapper namespace="com.studyit.mybatis.IMainDAO">
+		
+		<!-- 누적 스터디 개설 수 -->
+		<select id="stdCount" resultType="java.lang.Integer">
+			SELECT OPEN_STUDY_CNT
+			FROM VIEW_OPEN_STUDY_CNT
+		</select>
+		
+		<!-- 누적 스터디 멤버 수 -->
+		<select id="memCount" resultType="java.lang.Integer">
+			SELECT STUDY_MEM_CNT
+			FROM VIEW_STD_MEM_CNT
+		</select>
+		
+		<!-- 스터디 평균 만족도 -->
+		<select id="avgAssess" resultType="java.lang.Double">
+			SELECT NVL(STD_ASSESS_AVG, 0)
+			FROM VIEW_STD_ASSESS_AVG
+		</select>
+		
+		<!-- 정보공유게시판 추천수 top5 -->
+		<select id="boardInformTop5" resultType="com.studyit.mybatis.MainInformDTO">
+			SELECT REC, POSTCODE, USERCODE, WRITEDATE, HITCOUNT, TITLE, CONTENT, INTERMCCODE, WRITER, INTEREST_MC
+			FROM VIEW_INFORM_RANK5 V, TBL_INTEREST_MC I
+			WHERE V.INTERMCCODE = I.INTEREST_MC_CODE
+		</select>
+		
+		<!-- 스터디리뷰게시판 추천수 top3 -->
+		<select id="boardStdReviewTop3" resultType="com.studyit.mybatis.MainStdReviewDTO">
+			SELECT POSTCODE, WRITEDATE, REC, HITCOUNT, TITLE, CONTENT, WRITER, INTERMCCODE, STUDYCODE
+			FROM VIEW_STDREVIEW_RANK3
+		</select>
+		
+		<!-- 스터디 조회수 top3 -->
+		<select id="hitStudy" resultType="com.studyit.mybatis.MainStudyDTO">
+			SELECT CNT, TITLE, CONTENT, STUDYCODE, USERCODE
+			FROM VIEW_HIT_STUDY
+		</select>
+		
+		<!-- 관심분야 스터디 조회수 top3 -->
+		<select id="interStudy" resultType="com.studyit.mybatis.MainStudyDTO">
+		<![CDATA[
+		SELECT ROWNUM AS CNT, STUDYCODE, USERCODE, TITLE, CONTENT, INTERMC
+		FROM VIEW_INTERSTUDY_RANK3
+		WHERE USERCODE = #{usercode}
+		  AND ROWNUM<=3
+		 ]]>
+		</select>
+		
+		
+</mapper>

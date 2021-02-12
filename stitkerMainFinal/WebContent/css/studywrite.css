@@ -1,0 +1,129 @@
+@charset "UTF-8";
+*
+{
+	margin: 0px;
+	padding: 0px;
+}
+
+
+ul
+{
+	list-style: none;
+}
+
+.header_left
+{
+	
+	float: left;
+	font-size: 11pt;
+	font-weight: bold;
+}
+
+#table1 th
+{
+	text-align: center;
+	width: 150px;
+	font-size: 9pt;
+}
+	
+#table1 td
+{
+	text-align: left;
+	width: 550px;
+	font-size: 9pt;
+}
+
+#table1 .form-control
+{
+	font-size: 9pt;
+}
+
+.main
+{
+	width: 80%;
+	margin: 0px auto;
+}
+
+
+
+#footer
+{
+	clear: both;
+	height: 32px;
+	line-height: 32px;
+	margin-top: 40px;
+	margin-bottom: 40px;
+	text-align: center;
+}
+
+
+#StudyOpen_title
+{
+   width: 750px;
+   padding-bottom: 50px;
+   height: 40px;
+   text-align: left;
+   font-weight: bold;
+   line-height: 40px;
+   font-size: 20pt;
+   margin-bottom: 30px;
+}
+
+#table1 #studyCategory, #studyType, #minMem, #maxMem, #grade, #regionGroup1, #regionGroup2, #startTime, #endTime, #weekday
+{
+	width: 30%;
+}
+
+#hour, #minute
+{
+	width: 10%;
+}
+
+
+
+#startDate, #endDate
+{
+	width: 20%;
+}
+
+.btn
+{
+	border: 0px solid #000000;
+}
+
+.btn2
+{
+	float: right;
+	margin-left: 10px;
+	
+}
+
+#regionGroup1, #regionGroup2 {display: inline;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

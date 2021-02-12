@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<!-- ○ mapper 엘리먼트의 『namespace="패키지경로가 포함된 인터페이스"』 -->
+<!--    - 인터페이스 내부에 메소드명 선언이 되어 있어야 한다. -->
+<!--    - 메소드명과 『id="식별자"』가 일치해야 한다. -->
+<mapper namespace="com.studyit.mybatis.ICheckDAO">
+
+
+	<!-- 등급 확인 -->
+	<select id="checkRank" resultType="java.lang.String">
+		SELECT CASE WHEN SUM(SCORE) >= (SELECT MIN_SCORE FROM TBL_USER_RANK WHERE RANK_CODE = 'UR4') THEN SUM(SCORE) END
+		FROM TBL_SCORE
+		WHERE USER_CODE = #{user_code}
+		GROUP BY USER_CODE
+	</select>
+	
+	<!-- 참여중인 스터디 갯수 확인 -->
+	<select id="checkStudyCnt" resultType="java.lang.String">
+		SELECT NVL(COUNT(*),0) COUNT
+		FROM TBL_STUDY_APPLY A LEFT JOIN TBL_STUDY_CANCEL C
+		  ON A.APPLY_CODE = C.APPLY_CODE
+		    JOIN TBL_STUDY_OPEN O
+		    ON O.STUDY_CODE = A.STUDY_CODE
+		WHERE C.CANCEL_CODE IS NULL AND O.END_DATE > SYSDATE AND A.USER_CODE = #{user_code}
+		GROUP BY A.USER_CODE
+	</select>
+	
+	<!-- 계정정지여부 확인 -->
+	<select id="checkSuspend" resultType="java.lang.String">
+		SELECT COUNT(*) COUNT
+		FROM TBL_ACCOUNT_SUSPEND S JOIN TBL_WARNING W
+		  ON W.WARNING_CODE = S.WARNING_CODE
+		WHERE ADD_MONTHS(S.ACCT_SUS_DATE, 12) > SYSDATE AND W.USER_CODE = 'UC7'
+	</select>
+	
+	<!-- 해당 스터디에 이미 참여중인지 확인 -->
+	<select id="checkThisStudy" resultType="java.lang.Integer">
+		SELECT COUNT(*) COUNT
+		FROM TBL_STUDY_APPLY  
+		WHERE STUDY_CODE = #{study_code} AND USER_CODE = #{user_code}  
+	</select>
+	
+	<!-- 유저 등급 확인 -->
+	<select id="checkUserRank" resultType="java.lang.Integer">
+		SELECT SUM(SCORE)
+		FROM TBL_SCORE
+		WHERE USER_CODE = #{user_code}
+		GROUP BY USER_CODE
+	</select>
+	
+	<!-- 스터디 최소등급 확인 -->
+	<select id="checkStudyRank" resultType="java.lang.Integer">
+		SELECT MIN_SCORE 
+		FROM TBL_USER_RANK 
+		WHERE RANK_CODE = (SELECT MIN_RANK FROM TBL_STUDY_OPEN WHERE STUDY_CODE = #{study_code})
+	</select>
+
+
+</mapper>

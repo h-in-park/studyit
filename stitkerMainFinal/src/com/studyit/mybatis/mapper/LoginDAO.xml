@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper 
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  
+<mapper namespace="com.studyit.mybatis.ILoginDAO">
+	
+	<select id="userLogin" resultType="java.lang.String">
+		SELECT USER_CODE
+		FROM TBL_USER_REGISTER
+		WHERE ID = #{id}
+		  AND PW = CRYPTPACK.ENCRYPT(#{pw}, #{pw})
+	</select>
+	
+	<select id="adminLogin" resultType="java.lang.String">
+		SELECT ADMIN_CODE AS CODE
+		FROM TBL_ADMIN
+		WHERE ADMIN_ID=#{id}
+		  AND CRYPTPACK.DECRYPT(ADMIN_PW, #{pw}) = #{pw}
+	</select>
+	
+	
+	
+	
+	<!-- <select id="adminLogin" resultType="java.lang.String">
+		SELECT ADMIN_CODE AS CODE
+		FROM TBL_ADMIN
+		WHERE ADMIN_ID = #{id}
+		  AND ADMIN_PW = CRYPTPACK.DECRYPT(#{pw}, #{pw})
+	</select> -->
+	
+</mapper>

@@ -1,0 +1,29 @@
+@charset "UTF-8";
+
+.search
+{
+	width :100%;
+	height: 80px;
+	
+}
+.searchRight
+{
+	float: right;
+	text-align: right;
+	font-family: '굴림';
+}
+
+.searchLeft
+{
+	float: left;
+	text-align: left;
+	font-family: '굴림';
+}
+
+.searchRight2 select 
+{
+	height: 35px;
+}
+
+.page {margin-left: 50%; margin-bottom: 40px;}
+

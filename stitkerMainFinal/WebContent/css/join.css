@@ -1,0 +1,149 @@
+@charset "UTF-8";
+*
+{
+	margin: 0px;
+	padding: 0px;
+}
+
+
+ul
+{
+	list-style: none;
+}
+
+.header
+{
+	margin-top: 10px;
+	text-align: center;
+	font-size: 11pt;
+	font-weight: bold;
+}
+
+.main .title
+{
+	text-align:left;
+	margin-bottom: 20px;
+}
+
+#table1 th
+{
+	text-align: center;
+	width: 150px;
+	font-size: 9pt;
+}
+
+#table1 
+{
+	text-align: left;
+	width: 50%
+	font-size: 9pt;
+}
+	
+#table1 td
+{
+	text-align: left;
+	width: 350px;
+	font-size: 9pt;
+}
+
+#table1 .form-control
+{
+	font-size: 9pt;
+}
+
+.main
+{
+	width: 80%;
+	margin: 0px auto;
+}
+
+
+
+#footer
+{
+	clear: both;
+	height: 32px;
+	line-height: 32px;
+	margin-top: 40px;
+	margin-bottom: 40px;
+	text-align: center;
+}
+
+
+#Join_title
+{
+   width: 80%;
+   padding-bottom: 50px;
+   margin-left: 10%;
+   height: 40px;
+   text-align: left;
+   font-weight: bold;
+   line-height: 40px;
+   font-size: 20pt;
+   margin-bottom: 30px;
+   margin-top: 20px;
+}
+
+#name, #ssn, #pwSrch, #pwSrchCheck, #ssn1, #ssn2, #job1, #job2, #interest, #email, #studyType
+, #regionGroup1, #regionGroup2
+
+{
+	width: 30%;
+}
+
+#email, #id, #pw, #pw2
+ {
+	width: 60%;
+}
+
+#hour, #minute
+{
+	width: 10%;
+}
+
+
+
+#startDate, #endDate
+{
+	width: 20%;
+}
+
+
+
+.btnSet
+{
+	margin-top: 40px;
+}
+
+#table1 .id_overlap_button
+{
+	width: 15%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

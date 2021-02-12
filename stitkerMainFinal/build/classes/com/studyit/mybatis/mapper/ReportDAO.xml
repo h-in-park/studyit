@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.studyit.mybatis.IReportDAO">
+
+<select id="studyName" resultType="java.lang.String">
+SELECT STUDY_NAME
+FROM TBL_STUDY_OPEN
+WHERE STUDY_CODE =#{studycode}
+</select>
+
+<!-- 유저코드 조회 -->
+<select id="userCode" resultType="java.lang.String">
+SELECT USER_CODE
+FROM VIEW_STUDY_PARTICODE
+WHERE ID = #{id} AND STUDY_CODE =#{studycode}
+</select>
+
+
+<resultMap type="hashmap" id="param"></resultMap>
+<select id="report" statementType="CALLABLE">
+	{
+		CALL PRC_MEM_RPT_REG_INSERT(SYSDATE, #{userCode},#{report_category},#{reason}, #{userCode2}, #{studycode})
+	}
+</select>
+
+
+<!-- 신고 당하는 사람 parti_Code -->
+<select id="partiCode" resultType="java.lang.String">
+SELECT PARTI_CODE
+FROM VIEW_STUDY_PARTICODE
+WHERE ID = #{id} AND STUDY_CODE =#{studycode}
+</select>
+
+
+<!-- 신고했는지 확인 -->
+<select id="reportCheck" resultType="java.lang.Integer">
+SELECT COUNT(*) AS COUNT
+FROM TBL_MEM_REPORT_REG
+WHERE PARTI_REPORT_CODE = #{parti_code} AND PARTI_REPORTED_CODE =#{reported_parti_code}
+</select>
+
+
+
+
+</mapper>

@@ -1,0 +1,26 @@
+@charset "UTF-8";
+
+/* Find_Id.jsp */
+
+#login
+{
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	width: 350px;
+	padding: 15px;
+	margin: 30px;
+}
+#login h3
+{
+	margin: 0px; 
+	margin-bottom: 15px;
+}
+
+ #findId_byTel
+{
+	display: none;
+}
+#findId_byEmail
+{
+	display: none;
+}

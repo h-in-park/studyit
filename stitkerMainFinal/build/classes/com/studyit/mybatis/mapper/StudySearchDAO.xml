@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.studyit.mybatis.IStudySearchDAO">
+ 
+<!--  	<select id="list" resultType="com.studyit.mybatis.StudySearchDTO">
+ 	<![CDATA[
+	SELECT RNUM, STUDY_CODE, STUDY_CODE2, LEADER, STUDY_DESC,MIN_RANK, STUDY_TYPE, PERIOD, MIN_MEM, MAX_MEM, STUDY_NAME, CLOSE_DATE, INTEREST_MC, LOC_MC
+	FROM VIEW_STUDY_SEARCH
+	WHERE RNUM >=#{start} AND RNUM <=#{end}
+    ]]>
+ 	</select>
+ --> 	
+ 
+    <select id="list" resultType="com.studyit.mybatis.StudySearchDTO">
+ 	<![CDATA[
+ 	SELECT RNUM, STUDY_CODE, STUDY_CODE2, LEADER, STUDY_DESC,MIN_RANK, STUDY_TYPE, PERIOD, MIN_MEM, MAX_MEM, STUDY_NAME, CLOSE_DATE, INTEREST_MC, LOC_MC
+	FROM
+	(
+		SELECT ROWNUM AS RNUM, STUDY_CODE, STUDY_CODE2, LEADER, STUDY_DESC,MIN_RANK, STUDY_TYPE, PERIOD, MIN_MEM, MAX_MEM, STUDY_NAME, CLOSE_DATE, INTEREST_MC, LOC_MC
+		FROM
+		(
+			SELECT STUDY_CODE, STUDY_CODE2, LEADER, STUDY_DESC,MIN_RANK, STUDY_TYPE, PERIOD, MIN_MEM, MAX_MEM, STUDY_NAME, CLOSE_DATE, INTEREST_MC, LOC_MC
+			FROM VIEW_STUDY_SEARCH
+			WHERE ${searchKey} LIKE '%'||'${searchValue}'||'%' AND LOC_LC_CODE LIKE '%'||'${loc_lc}'||'%' AND LOC_MC_CODE LIKE '%'||'${loc_mc}'||'%' AND STUDY_TYPE LIKE '%'||'${study_type}'||'%'
+			ORDER BY TO_NUMBER(SUBSTR(STUDY_CODE,3)) 
+		)
+	)
+	WHERE RNUM >=#{start} AND RNUM <=#{end}
+	ORDER BY RNUM DESC
+    ]]>
+ 	</select>
+	
+	<!-- 게시물 수 -->
+	<!-- <select id="count" resultType="java.lang.Integer">
+	select count(*) as count
+	from VIEW_STUDY_SEARCH
+	</select>  -->
+
+	<select id="count" resultType="java.lang.Integer">
+      SELECT COUNT(*) AS COUNT
+      FROM VIEW_STUDY_SEARCH
+      WHERE ${searchKey} LIKE '%'||'${searchValue}'||'%' AND LOC_LC_CODE LIKE '%'||'${loc_lc}'||'%' AND LOC_MC_CODE LIKE '%'||'${loc_mc}'||'%' AND STUDY_TYPE LIKE '%'||'${study_type}'||'%' 
+    </select>
+
+
+	<!-- 스터디명으로 검색 -->
+	<select id="studyTitleSearch" resultType="com.studyit.mybatis.StudySearchDTO">
+	<![CDATA[ 
+	SELECT RNUM , STUDY_CODE, STUDY_CODE2,LEADER, STUDY_DESC,MIN_RANK, STUDY_TYPE, PERIOD, MIN_MEM, MAX_MEM, STUDY_NAME, CLOSE_DATE, INTEREST_MC, LOC_MC
+	FROM
+	(
+	SELECT RNUM , STUDY_CODE, STUDY_CODE2, LEADER, STUDY_DESC,MIN_RANK, STUDY_TYPE, PERIOD, MIN_MEM, MAX_MEM, STUDY_NAME, CLOSE_DATE, INTEREST_MC, LOC_MC
+	FROM VIEW_STUDY_SEARCH
+	WHERE STUDY_NAME LIKE '%'||#{searchValue}||'%' 
+	)	
+	WHERE RNUM >=#{start} AND RNUM <=#{end}
+	]]>
+	</select>
+	
+	<!-- 리더 아이디로 검색 -->
+	<select id="studyLeaderSearch" resultType="com.studyit.mybatis.StudySearchDTO">
+	<![CDATA[ 
+	SELECT RNUM , STUDY_CODE, STUDY_CODE2, LEADER, STUDY_DESC,MIN_RANK, STUDY_TYPE, PERIOD, MIN_MEM, MAX_MEM, STUDY_NAME, CLOSE_DATE, INTEREST_MC, LOC_MC
+	FROM
+	(
+	SELECT RNUM , STUDY_CODE, STUDY_CODE2,LEADER, STUDY_DESC,MIN_RANK, STUDY_TYPE, PERIOD, MIN_MEM, MAX_MEM, STUDY_NAME, CLOSE_DATE, INTEREST_MC, LOC_MC
+	FROM VIEW_STUDY_SEARCH
+	WHERE LEADER LIKE '%'||#{searchValue}||'%' 
+	)	
+	WHERE RNUM >=#{start} AND RNUM <=#{end} 
+	]]>
+	</select>
+	
+	<!-- 스터디 번호로 검색  -->
+	<select id="studyNumSearch" resultType="com.studyit.mybatis.StudySearchDTO">
+	<![CDATA[ 
+	SELECT RNUM , STUDY_CODE, STUDY_CODE2, LEADER, STUDY_DESC,MIN_RANK, STUDY_TYPE, PERIOD, MIN_MEM, MAX_MEM, STUDY_NAME, CLOSE_DATE, INTEREST_MC, LOC_MC
+	FROM
+	(
+	SELECT RNUM , STUDY_CODE, STUDY_CODE2, LEADER, STUDY_DESC,MIN_RANK, STUDY_TYPE, PERIOD, MIN_MEM, MAX_MEM, STUDY_NAME, CLOSE_DATE, INTEREST_MC, LOC_MC
+	FROM VIEW_STUDY_SEARCH
+	WHERE STUDY_CODE2 LIKE '%'||#{searchValue}||'%' 
+	)	
+	WHERE RNUM >=#{start} AND RNUM <=#{end}
+	]]>
+	</select>
+	
+	<!-- 리스트에 뿌리는 내용 -->
+	<select id="loc_lc" resultType="com.studyit.mybatis.StudySearchDTO">
+	SELECT LOC_LC, LOC_LC_CODE
+	FROM TBL_LOC_LC
+	ORDER BY LOC_LC_CODE
+	</select>
+	
+	<select id="loc_mc" resultType="com.studyit.mybatis.StudySearchDTO">
+	SELECT LOC_MC_CODE, LOC_MC
+	FROM TBL_LOC_MC
+	ORDER BY TO_NUMBER(SUBSTR(LOC_MC_CODE,3))
+	</select>
+	
+	<select id="study_type" resultType="com.studyit.mybatis.StudySearchDTO">
+	SELECT STUDY_TYPE_CODE, STUDY_TYPE
+	FROM TBL_STUDY_TYPE
+	</select>
+	
+	<select id="rank" resultType="com.studyit.mybatis.StudySearchDTO">
+	SELECT RANK_CODE, RANK
+	FROM TBL_USER_RANK
+	</select>
+	
+	
+	<!-- 카테고리 검색  -->
+	<!-- 전체 선택 -->
+<!-- 	<select id="categorySearch" resultType="com.studyit.mybatis.StudySearchDTO">
+	<![CDATA[ 
+	SELECT RNUM , STUDY_CODE, STUDY_CODE2,LEADER, STUDY_DESC,MIN_RANK, STUDY_TYPE, PERIOD, MIN_MEM, MAX_MEM, STUDY_NAME, CLOSE_DATE, INTEREST_MC, LOC_MC_CODE, LOC_MC, LOC_LC_CODE
+	FROM
+	(
+	SELECT RNUM , STUDY_CODE, STUDY_CODE2, LEADER, STUDY_DESC,MIN_RANK, STUDY_TYPE, PERIOD, MIN_MEM, MAX_MEM, STUDY_NAME, CLOSE_DATE, INTEREST_MC,LOC_MC_CODE, LOC_MC, LOC_LC_CODE
+	FROM VIEW_STUDY_SEARCH
+	WHERE LOC_LC_CODE LIKE '%'||#{loc_lc}||'%' AND LOC_MC_CODE LIKE '%'||#{loc_mc}||'%' AND STUDY_TYPE LIKE '%'||#{studyType}||'%' 
+	)	
+	WHERE RNUM >=#{start} AND RNUM <=#{end}
+	]]>
+	</select>
+ -->	
+		
+</mapper>

@@ -1,0 +1,15 @@
+@charset "UTF-8";
+
+/*테이블 위치 및 크기 설정*/
+.table { width: 90%; height: 80%; margin-right: auto; margin-left: auto;  vertical-align: middle;}
+.table td, th { border-bottom: 1px solid lightGray; }
+.table th { background-color: #F5F5F5; height: 50px; text-align: center;}
+.table td:not(.left) {text-align: center;}
+.table th:not(.narrow) { width: 20%; }
+.narrow {width: 10%;}
+
+/*버튼 설정*/
+.buttons {position: absolute; right:4%;}
+
+/*소제목 설정*/
+.category {font-size: 20pt; padding: 15px; font-weight: bold; text-align: center;}

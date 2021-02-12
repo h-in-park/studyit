@@ -1,0 +1,116 @@
+@charset "UTF-8";
+/* 메뉴와 컨텐트 레이아웃, 배경색 설정 */
+.menu {float: left; background-color: white; width: 20%; min-height: 800px; border-right: 1px solid black;}
+
+/* footer 설정 */
+.footer {clear: left;}
+
+/* 왼쪽네비게이션 설정 */
+.menu nav ul li { list-style: none; text-align: left; margin: 10px; height: 50px; }
+.menu a { text-decoration: none; font-size: 15px; font-weight: bold;}
+.menu a:not(.selected) {color: black; }
+.menu a:hover {color: SlateBlue;}
+.selected {color: SlateBlue;}
+
+.table {margin-left:auto; margin-right:auto;}
+
+.main
+{
+	width: 80%;
+	margin-left: 20px;
+ 	margin: 0px auto; 
+}
+
+#table1
+{
+	width: 80%;
+	font-size: 9pt;
+	margin-bottom: 10px;
+	border-bottom: 0px solid #ffffff;
+	
+}
+
+#table1 th
+{
+	background: #f0f0f0;
+	width: 100px;
+}
+
+#table1 td
+{
+	text-align: left;
+	width: 700px;
+}
+
+
+#table1 td:nth-child(2){color: blue; text-align: left;}
+#table1 td:nth-child(4){color: red; text-align: left;}
+
+
+#table1 .boxTA
+{
+	width: 750px;
+	height: 500px;
+	
+}
+
+#btnSet
+{
+	margin-bottom: 40px;
+}
+
+a
+{
+	cursor: pointer;
+	color: #000000;
+	text-decoration: none;
+	line-height: 150%;
+}
+
+a:hover, a:active
+{
+	color: #8000ff;
+	text-decoration: underline;
+}
+
+#footer
+{
+	margin-bottom: 30px;
+}
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

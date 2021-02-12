@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<!-- ○ mapper 엘리먼트의 『namespace="패키지경로가 포함된 인터페이스"』 -->
+<!--    - 인터페이스 내부에 메소드명 선언이 되어 있어야 한다. -->
+<!--    - 메소드명과 『id="식별자"』가 일치해야 한다. -->
+<mapper namespace="com.studyit.mybatis.IInformDAO">
+
+	 <!-- ○ 쿼리 내부에 있느 컬럼명의 정보가 -->
+	 <!--    자료형 클래스(DTO) 멤버 변수(속성)와 일치하는 경우 -->
+	 <!--    자동 매핑이 이루어진다. -->
+	  <!-- <select id="list" resultType="com.studyit.mybatis.InformDTO">
+		 <![CDATA[ 
+         SELECT ROWNUM POST_NUM, POST_CODE, USER_CODE, TO_CHAR(WRITE_DATE, 'YYYY-MM-DD') WRITE_DATE, HITCOUNT, TITLE, CONTENT, REC, NOTREC, INTEREST_MC, USER_NAME, ID
+         FROM VIEW_BOARD_INFORM
+         ORDER BY POST_NUM DESC   
+      ]]> 
+	 </select>  -->
+	 
+	 
+	 <!-- <select id="getList" resultType="com.studyit.mybatis.InformDTO">
+		 <![CDATA[
+		 SELECT POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, HITCOUNT
+		      , TITLE, CONTENT, REC, NOTREC, INTEREST_MC, USER_NAME, ID
+		 FROM VIEW_BOARD_INFORM
+		 WHERE POST_NUM >= #{start} AND POST_NUM <= #{end}
+		 ORDER BY POST_NUM DESC
+		 ]]>
+	 </select> -->
+
+	<!-- 글 수 카운트  -->
+	 <select id="count" resultType="java.lang.Integer">
+	 	SELECT COUNT(*) AS COUNT
+		FROM TBL_BOARD_INFORM
+	 </select> 
+	 
+	 <!-- 검색 기능 추가 후 글 수 카운트 -->
+	 <select id="getDataCount" resultType="java.lang.Integer">
+	 	SELECT COUNT(*) AS COUNT
+		FROM VIEW_BOARD_INFORM
+		WHERE ${searchKey} LIKE '%'||'${searchValue}'||'%' 
+		  AND INTEREST_MC LIKE '%'||'${searchCategory}'||'%'
+	 </select>
+	 
+
+	 <!-- 글 작성 -->
+	 <insert id="add">
+	 	INSERT INTO TBL_BOARD_INFORM(POST_CODE, USER_CODE, WRITE_DATE
+	 	, HITCOUNT, TITLE, CONTENT, INTEREST_MC_CODE) 
+		VALUES ('BI'||BOARD_INFORM_SEQ.NEXTVAL, #{user_code}, DEFAULT, DEFAULT, #{title}, 
+        #{content}, #{interest_mc_code})
+	 </insert>
+	 
+	 <!-- 글 수정 -->
+	 <update id="modify">
+	 	UPDATE TBL_BOARD_INFORM 
+		SET TITLE = #{title}, CONTENT = #{content}, INTEREST_MC_CODE = #{interest_mc_code}
+		WHERE POST_CODE = #{post_code}
+	 </update>
+	 
+	 <!-- 조회 수 증가 -->
+	 <update id="hitcounts">
+		UPDATE TBL_BOARD_INFORM
+		SET HITCOUNT = (HITCOUNT+1)
+		WHERE POST_CODE = #{post_code}
+	 </update>
+	 
+
+	 <select id="interestMc" resultType="java.lang.String">
+	 	SELECT INTEREST_MC_CODE
+	 	FROM TBL_INTEREST_MC
+		WHERE INTEREST_MC = #{interest_mc}
+	 </select>
+	 
+	 <!-- 글 삭제 -->
+	 <delete id="remove">
+	 	DELETE 
+	 	FROM TBL_BOARD_INFORM 
+	 	WHERE POST_CODE = #{post_code}
+	 </delete>
+	
+	<!-- 글 상세 페이지 -->
+	 <select id="detail" resultType="com.studyit.mybatis.InformDTO">
+	 	 SELECT POST_CODE, USER_CODE, USER_NAME, TO_CHAR(WRITE_DATE, 'YYYY-MM-DD') WRITE_DATE, HITCOUNT, TITLE, CONTENT, REC, NOTREC, INTEREST_MC, ID
+	     FROM VIEW_BOARD_INFORM
+	     WHERE POST_CODE = #{post_code}
+	 </select>
+	 
+	 <!-- 글 추천 -->
+	 <insert id="rec">
+         INSERT INTO TBL_REC_INFORM(REC_CODE, POST_CODE, USER_CODE, REC_CHECK, REC_DATE) 
+         VALUES ('RI'||REC_INFORM_SEQ.NEXTVAL, #{post_code}, #{user_code}, 1, DEFAULT)
+      </insert>
+      
+      <!-- 글 비추천 -->
+      <insert id="notrec">
+         INSERT INTO TBL_REC_INFORM(REC_CODE, POST_CODE, USER_CODE, REC_CHECK, REC_DATE) 
+         VALUES ('RI'||REC_INFORM_SEQ.NEXTVAL, #{post_code}, #{user_code}, 2, DEFAULT)
+      </insert>
+      
+      <!-- 추천여부 -->
+		<select id="checkRec" resultType="java.lang.Integer">
+			SELECT COUNT(*) COUNT
+			FROM TBL_REC_INFORM
+			WHERE POST_CODE = #{post_code} AND USER_CODE = #{user_code}	
+		</select>
+      
+
+     <!--제목으로 검색 
+		<select id="informTitleSearch" resultType="com.studyit.mybatis.InformDTO"> 
+		<![CDATA[ 
+		SELECT ROWNUM AS POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, HITCOUNT
+		      , TITLE, CONTENT, REC, NOTREC, INTEREST_MC, USER_NAME, ID
+		FROM
+		(
+			SELECT ROWNUM AS POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, HITCOUNT
+		      , TITLE, CONTENT, REC, NOTREC, INTEREST_MC, USER_NAME, ID 
+			FROM VIEW_BOARD_INFORM
+			WHERE TITLE LIKE '%'||'${searchValue}'||'%' 
+			ORDER BY WRITE_DATE DESC 
+		)
+		]]> 
+		</select>
+		
+		작성자로 검색
+		<select id="informWriterSearch" resultType="com.studyit.mybatis.InformDTO"> 
+		<![CDATA[ 
+		SELECT ROWNUM AS POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, HITCOUNT
+		      , TITLE, CONTENT, REC, NOTREC, INTEREST_MC, USER_NAME, ID 
+		FROM
+		(
+			SELECT POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, INTEREST_MC, HITCOUNT
+			, TITLE, CONTENT, REC, NOTREC, USER_NAME, ID 
+			FROM VIEW_BOARD_INFORM
+			WHERE USER_NAME LIKE '%'||'${searchValue}'||'%' 
+			ORDER BY WRITE_DATE DESC 
+		)
+		]]> 
+		</select>
+		
+		내용으로 검색
+		<select id="informContentSearch" resultType="com.studyit.mybatis.InformDTO"> 
+		<![CDATA[ 
+		SELECT ROWNUM AS POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, HITCOUNT
+		      , TITLE, CONTENT, REC, NOTREC, INTEREST_MC, USER_NAME, ID 
+		FROM
+		(
+			SELECT POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, INTEREST_MC, HITCOUNT
+			, TITLE, CONTENT, REC, NOTREC, USER_NAME, ID 
+			FROM VIEW_BOARD_INFORM 
+			WHERE CONTENT LIKE '%'||'${searchValue}'||'%' 
+			ORDER BY WRITE_DATE DESC
+		) 
+		]]> 
+		</select>
+		
+		제목&내용 검색
+		<select id="informTnCSearch" resultType="com.studyit.mybatis.InformDTO"> 
+		<![CDATA[ 
+		SELECT ROWNUM AS POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, HITCOUNT
+		      , TITLE, CONTENT, REC, NOTREC, INTEREST_MC, USER_NAME, ID 
+		FROM
+		(
+			SELECT POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, INTEREST_MC, HITCOUNT
+			, TITLE, CONTENT, REC, NOTREC, USER_NAME, ID
+			FROM VIEW_BOARD_INFORM 
+			WHERE TITLE LIKE '%'||'${searchValue}'||'%' 
+			  OR CONTENT LIKE '%'||'${searchValue}'||'%' 
+			ORDER BY WRITE_DATE DESC 
+		) 
+		]]>  
+		</select>
+		
+		제목&카테고리로 검색 
+		<select id="informCtgTitleSearch" resultType="com.studyit.mybatis.InformDTO"> 
+		<![CDATA[ 
+		SELECT ROWNUM AS POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, HITCOUNT
+		      , TITLE, CONTENT, REC, NOTREC, INTEREST_MC, USER_NAME, ID
+		FROM
+		(
+			SELECT ROWNUM AS POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, HITCOUNT
+		      , TITLE, CONTENT, REC, NOTREC, INTEREST_MC, USER_NAME, ID 
+			FROM VIEW_BOARD_INFORM
+			WHERE TITLE LIKE '%'||'${searchValue}'||'%' 
+			  AND INTEREST_MC LIKE '%'||'${searchCategory}'||'%' 
+			ORDER BY WRITE_DATE DESC 
+		)
+		]]> 
+		</select>
+		
+		작성자&카테고리로 검색
+		<select id="informCtgWriterSearch" resultType="com.studyit.mybatis.InformDTO"> 
+		<![CDATA[ 
+		SELECT ROWNUM AS POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, HITCOUNT
+		      , TITLE, CONTENT, REC, NOTREC, INTEREST_MC, USER_NAME, ID 
+		FROM
+		(
+			SELECT POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, INTEREST_MC, HITCOUNT
+			, TITLE, CONTENT, REC, NOTREC, USER_NAME, ID 
+			FROM VIEW_BOARD_INFORM
+			WHERE USER_NAME LIKE '%'||'${searchValue}'||'%' 
+			  AND INTEREST_MC LIKE '%'||'${searchCategory}'||'%' 
+			ORDER BY WRITE_DATE DESC 
+		)
+		]]> 
+		</select>
+		
+		내용&카테고리로 검색
+		<select id="informCtgContentSearch" resultType="com.studyit.mybatis.InformDTO"> 
+		<![CDATA[ 
+		SELECT ROWNUM AS POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, HITCOUNT
+		      , TITLE, CONTENT, REC, NOTREC, INTEREST_MC, USER_NAME, ID 
+		FROM
+		(
+			SELECT POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, INTEREST_MC, HITCOUNT
+			, TITLE, CONTENT, REC, NOTREC, USER_NAME, ID 
+			FROM VIEW_BOARD_INFORM 
+			WHERE CONTENT LIKE '%'||'${searchValue}'||'%' 
+			  AND INTEREST_MC LIKE '%'||'${searchCategory}'||'%' 
+			ORDER BY WRITE_DATE DESC
+		) 
+		]]> 
+		</select>
+		
+		제목&내용&카테고리로 검색
+		<select id="informCtgTnCSearch" resultType="com.studyit.mybatis.InformDTO"> 
+		<![CDATA[ 
+		SELECT ROWNUM AS POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, HITCOUNT
+		      , TITLE, CONTENT, REC, NOTREC, INTEREST_MC, USER_NAME, ID 
+		FROM
+		(
+			SELECT POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, INTEREST_MC, HITCOUNT
+			, TITLE, CONTENT, REC, NOTREC, USER_NAME, ID
+			FROM VIEW_BOARD_INFORM 
+			WHERE TITLE LIKE '%'||'${searchValue}'||'%' 
+			  OR CONTENT LIKE '%'||'${searchValue}'||'%' 
+			  AND INTEREST_MC LIKE '%'||'${searchCategory}'||'%' 
+			ORDER BY WRITE_DATE DESC 
+		) 
+		]]> 
+		</select>
+		
+		
+		카테고리로 검색
+		<select id="informCtgSearch" resultType="com.studyit.mybatis.InformDTO"> 
+		<![CDATA[ 
+		SELECT ROWNUM AS POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, HITCOUNT
+		      , TITLE, CONTENT, REC, NOTREC, INTEREST_MC, USER_NAME, ID 
+		FROM
+		(
+			SELECT POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, INTEREST_MC, HITCOUNT
+			, TITLE, CONTENT, REC, NOTREC, USER_NAME, ID
+			FROM VIEW_BOARD_INFORM 
+			WHERE INTEREST_MC LIKE '%'||'${searchCategory}'||'%' 
+			ORDER BY WRITE_DATE DESC 
+		) 
+		]]> 
+		</select> --> 
+		
+		<!-- 검색 후 글 리스트 -->
+       <select id="getList" resultType="com.studyit.mybatis.InformDTO"> 
+      <![CDATA[ 
+         SELECT POST_NUM, POST_CODE, USER_CODE, TO_CHAR(WRITE_DATE, 'YYYY-MM-DD') WRITE_DATE, HITCOUNT, TITLE, CONTENT, REC, NOTREC, INTEREST_MC, USER_NAME, ID
+         FROM 
+         (
+             SELECT ROWNUM POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, HITCOUNT, TITLE, CONTENT, REC, NOTREC, INTEREST_MC, USER_NAME, ID
+             FROM
+             (
+                 SELECT POST_CODE, USER_CODE, WRITE_DATE, HITCOUNT, TITLE, CONTENT, REC, NOTREC, INTEREST_MC, USER_NAME, ID
+                 FROM VIEW_BOARD_INFORM
+                 WHERE ${searchKey} LIKE '%'||'${searchValue}'||'%' AND INTEREST_MC LIKE '%'||'${searchCategory}'||'%'
+                 ORDER BY WRITE_DATE 
+             )
+         )
+         WHERE POST_NUM BETWEEN #{start} AND #{end}
+         ORDER BY POST_NUM DESC   
+      ]]> 
+      </select>
+		
+		<!-- 신고 카테고리 가져오기 -->
+		<select id="getReportCtg" resultType="com.studyit.mybatis.InterviewReportDTO">
+			SELECT POST_REPORT_CTG_CODE, POST_REPORT_CTG
+			FROM TBL_POST_REPORT_CTG	
+		</select>
+		
+		<!-- 신고 등록하기 -->
+		<resultMap type="hashmap" id="reportParam"></resultMap>
+		<select id="addReport" statementType="CALLABLE">
+			{
+				CALL PRC_RPT_REG_INFOM_INSERT(#{post_code}, #{user_code}, #{report_reason}, #{post_report_ctg_code})
+			}
+		</select>
+		
+		<!-- 신고 여부 확인 -->
+		<select id="checkReport" resultType="java.lang.Integer">
+			SELECT COUNT(*) COUNT
+			FROM TBL_REPORT_REG_INFORM
+			WHERE POST_CODE = #{post_code} AND USER_CODE = #{user_code}
+		</select>
+
+	 
+
+	 
+	 
+	 
+
+
+</mapper>

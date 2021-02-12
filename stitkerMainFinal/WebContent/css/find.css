@@ -1,0 +1,23 @@
+@charset "UTF-8";
+
+	/*
+	·Find_id(아이디 찾기)
+	
+	·Find_pw(비밀번호 찾기)
+	
+	  페이지 공통 CSS
+	*/
+
+	#findId_byEmail, #find_byQnA
+	{
+		display: none;
+	}
+	#findId_byEmail span, #find_byQnA span
+	{
+		display: none;
+		
+	}
+	#findId_byEmail button, #find_byQnA button
+	{
+		float: right;
+	}

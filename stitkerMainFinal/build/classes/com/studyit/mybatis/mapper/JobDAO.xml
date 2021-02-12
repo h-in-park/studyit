@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<!-- ○ mapper 엘리먼트의 『namespace="패키지경로가 포함된 인터페이스"』 -->
+<!--    - 인터페이스 내부에 메소드명 선언이 되어 있어야 한다. -->
+<!--    - 메소드명과 『id="식별자"』가 일치해야 한다. -->
+<mapper namespace="com.studyit.mybatis.IJobDAO">
+
+	 <!-- ○ 쿼리 내부에 있느 컬럼명의 정보가
+	    자료형 클래스(DTO) 멤버 변수(속성)와 일치하는 경우 -->
+	 
+	 <select id="jbmList" resultType="com.studyit.mybatis.JobDTO">
+		SELECT JOB_MC_CODE, JOB_MC, JOB_LC_CODE
+		FROM TBL_JOB_MC
+		ORDER BY TO_NUMBER(SUBSTR(JOB_MC_CODE, 3))
+	 </select>
+	 
+	 <select id="jblList" resultType="com.studyit.mybatis.JobDTO">
+		SELECT JOB_LC_CODE, JOB_LC
+		FROM TBL_JOB_LC
+		ORDER BY JOB_LC_CODE
+	 </select>
+	 
+	 <!-- 추가 -->
+	 <select id="jblmList" resultType="com.studyit.mybatis.JobDTO">
+	 	SELECT JOB_MC_CODE, JOB_MC, JOB_LC_CODE
+		FROM TBL_JOB_MC
+		WHERE JOB_LC_CODE = #{job_lc_code}
+		ORDER BY TO_NUMBER(SUBSTR(JOB_MC_CODE, 3))
+	 </select>
+	 
+	 <select id="jbmList2" resultType="com.studyit.mybatis.JobDTO">
+		SELECT JOB_MC_CODE, JOB_MC, JOB_LC_CODE
+		FROM TBL_JOB_MC
+		WHERE JOB_LC_CODE = #{job_lc_code}
+		ORDER BY TO_NUMBER(SUBSTR(JOB_MC_CODE, 3))
+	 </select>	 
+</mapper>

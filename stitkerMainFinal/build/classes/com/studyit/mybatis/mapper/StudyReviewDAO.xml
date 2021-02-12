@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.studyit.mybatis.IStudyReview">
+
+	<!-- 스터디 후기 리스트 -->
+	<select id="list" resultType="com.studyit.mybatis.StudyReviewDTO">
+	<![CDATA[ 
+	SELECT POST_NUM, POST_CODE,  WRITE_DATE, HITCOUNT, TITLE, CONTENT, REC, NOTREC, USER_NAME, ID
+	FROM
+	(
+	    SELECT ROWNUM AS POST_NUM, POST_CODE, WRITE_DATE, HITCOUNT, TITLE, CONTENT, REC, NOTREC, USER_NAME, ID
+	    FROM
+	    (
+	        SELECT USER_NAME,POST_NUM, POST_CODE, WRITE_DATE, HITCOUNT, TITLE, CONTENT,REC,NOTREC, INTEREST_MC ,ID
+			FROM VIEW_BOARD_STUDYREVIEW
+			ORDER BY POST_NUM
+	    )
+	    ORDER BY POST_NUM DESC
+	)
+	WHERE POST_NUM >= #{start} AND POST_NUM <= #{end}
+	]]>
+	</select>
+	
+	<!-- 게시글 수 조회 -->		
+	<select id="count" resultType="java.lang.Integer">
+		SELECT COUNT(*) AS COUNT
+		FROM TBL_BOARD_STUDYREVIEW
+	</select>
+	
+	<!-- 스터디 interest_mc조회 -->
+	<select id ="interestlist" resultType="com.studyit.mybatis.StudyReviewDTO">
+		SELECT INTEREST_MC_CODE, INTEREST_MC
+		FROM VIEW_STUDY_INTEREST
+		WHERE STUDY_CODE =#{studycode}
+	</select>
+		
+	<!-- 조회수 증가 -->
+	<update id="hitcount">
+		UPDATE VIEW_BOARD_STUDYREVIEW
+		SET HITCOUNT = HITCOUNT+1
+		WHERE POST_CODE = #{post_code}
+	</update>
+	
+	<!-- 상세페이지 출력 -->
+	<select id="detail" resultType="com.studyit.mybatis.StudyReviewDTO">
+		SELECT POST_NUM, POST_CODE, WRITE_DATE, HITCOUNT, TITLE, CONTENT, REC, NOTREC, USER_NAME , ID
+		FROM VIEW_BOARD_STUDYREVIEW 
+		WHERE POST_CODE = #{post_code}
+	</select>
+		
+	<!-- 후기 등록 -->				
+	<insert id="reviewInsert">
+		INSERT INTO TBL_BOARD_STUDYREVIEW(POST_CODE, PARTI_CODE, WRITE_DATE, HITCOUNT, TITLE, CONTENT,INTEREST_MC_CODE) 
+			VALUES ('BR'||BOARD_STUDYREVIEW_SEQ.NEXTVAL, #{parti_code}, DEFAULT, DEFAULT, #{title}, #{content},#{interest_mc_code})
+	</insert>
+	
+	
+	<!-- 후기 수정 -->
+	<update id="modify">
+		UPDATE TBL_BOARD_STUDYREVIEW
+		SET TITLE=#{title}, CONTENT=#{content} 
+		WHERE POST_CODE = #{post_code}
+	</update>
+	
+	
+	<!-- 후기 삭제 -->
+	<delete id="delete">
+		DELETE
+		FROM TBL_BOARD_STUDYREVIEW
+		WHERE POST_CODE=#{post_code}
+	</delete>
+	
+	
+	<!-- 댓글 조회 -->
+	<select id="commentList" resultType="com.studyit.mybatis.StudyReviewDTO">
+		SELECT R.POST_CODE POST_CODE, C.COMMENT_CODE COMMENT_CODE, C.COMMENTS COMMENTS, C.USER_CODE USER_CODE, TO_CHAR(C.WRITE_DATE,'YYYY-MM-DD') AS WRITE_DATE, U.ID ID
+		FROM TBL_BOARD_STUDYREVIEW R, TBL_COMMENT_STUDYREVIEW C, TBL_USER_REGISTER U
+		WHERE R.POST_CODE = C.POST_CODE
+		  AND C.USER_CODE = U.USER_CODE
+		    AND R.POST_CODE = #{post_code}
+		ORDER BY C.WRITE_DATE
+	</select>
+	
+	
+	<!-- 댓글 갯수 -->
+	<select id="commentCnt" resultType="java.lang.Integer">
+		SELECT COUNT (*) AS COUNT
+		FROM TBL_BOARD_STUDYREVIEW R, TBL_COMMENT_STUDYREVIEW C, TBL_USER_REGISTER U
+		WHERE R.POST_CODE = C.POST_CODE
+		  AND C.USER_CODE = U.USER_CODE
+		  AND R.POST_CODE = #{post_code}
+	</select>
+	
+	<!-- 댓글 입력 -->
+	<insert id="addComment">
+		INSERT INTO TBL_COMMENT_STUDYREVIEW(COMMENT_CODE, POST_CODE, COMMENTS, USER_CODE, WRITE_DATE) 
+		VALUES ('CR'||COMMENT_STUDYREVIEW_SEQ.NEXTVAL, #{post_code}, #{comments}, #{user_code}, DEFAULT)
+	</insert>
+	
+	<!-- 추천 입력 -->
+	<insert id="rec">
+		INSERT INTO TBL_REC_STUDYREVIEW(REC_CODE, POST_CODE, USER_CODE, REC_CHECK, REC_DATE) 
+		VALUES ('RR'||REC_INTERVIEW_SEQ.NEXTVAL, #{post_code}, #{user_code}, 1, DEFAULT)
+	</insert>
+	
+	<!-- 비추천 입력 -->
+	<insert id="notrec">
+		INSERT INTO TBL_REC_STUDYREVIEW(REC_CODE, POST_CODE, USER_CODE, REC_CHECK, REC_DATE) 
+		VALUES ('RR'||REC_INTERVIEW_SEQ.NEXTVAL, #{post_code}, #{user_code}, 2, DEFAULT)
+	</insert>
+	
+	<!-- 추천 여부 체크 -->
+	<select id="recCheck" resultType="java.lang.Integer">
+		SELECT COUNT(*)
+		FROM TBL_REC_STUDYREVIEW
+		WHERE USER_CODE= #{user_code} AND POST_CODE = #{post_code}
+	</select> 
+	
+	<!-- 댓글 가져오기 -->
+	<select id="getComm" resultType="com.studyit.mybatis.StudyReviewDTO">
+		SELECT COMMENTS, COMMENT_CODE
+		FROM TBL_COMMENT_STUDYREVIEW
+		WHERE COMMENT_CODE = #{comment_code}
+	</select>
+	
+	<!-- 댓글수정 -->
+	<update id="modifyComm">
+		UPDATE TBL_COMMENT_STUDYREVIEW
+		SET COMMENTS = #{comments}
+		WHERE COMMENT_CODE = #{comment_code}	
+	</update>
+	
+	<!-- 댓글삭제 -->
+	<delete id="deleteComm">
+		DELETE
+		FROM TBL_COMMENT_STUDYREVIEW
+		WHERE COMMENT_CODE = #{comment_code}
+	</delete>	
+		
+
+</mapper>

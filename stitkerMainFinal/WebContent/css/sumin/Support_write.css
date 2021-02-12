@@ -1,0 +1,10 @@
+@charset "UTF-8";
+
+/*페이지 제목, 질문 제목, 내용 입력칸, 버튼 설정*/
+.table {width: 90%; margin-right: auto; margin-left: auto;}
+.table .write { width: 90%;}
+.buttons {position: absolute; right:11%;}
+.category {font-size: 20pt; padding: 15px; font-weight: bold;}
+.table th {width: 5%; font-size: 10pt; text-align: right; }
+.form-control {font-size: 9pt;}
+.table .textareaTd {padding-right: 10%;}

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.studyit.mybatis.IMemberDAO">
+
+	<select id="member" resultType="com.studyit.mybatis.MemberDTO">
+	SELECT ROWNUM AS RNUM, ID, STUDY_CODE, PARTI_CODE AS "PARTI_ASSESSED_CODE"
+	FROM ASSESSED_MEM_VIEW
+	WHERE STUDY_CODE = #{studycode} AND ID != #{id}
+	</select>
+	
+	<!--  평가해야하는 인원 수 확인 -->
+	<select id="count" resultType="java.lang.Integer">
+	SELECT COUNT(*) AS CNT
+ 	FROM ASSESSED_MEM_VIEW
+ 	WHERE STUDY_CODE=#{studycode} AND ID !=#{id}	
+	</select>
+	
+	<!-- <insert id="memberassess" parameterType="java.util.List">
+		INSERT ALL 
+	    <foreach collection="list" item="item" index="index"  open="" separator="" close="SELECT * FROM DUAL">
+	    INTO TBL_STUDY_INTERASSESS
+			(INTERASSESS_CODE, PARTI_ASSESS_CODE, RESP_CODE, ITEM_CODE, PARTI_ASSESSED_CODE, INTERASSESS_DATE)
+	    VALUES
+	   	 	('IA'|| STUDY_IASSE_SEQ.NEXTVAL, #{item.parti_code}, #{item.ar}, #{item.ai}, #{item.parti_assessed_code}, SYSDATE)
+	    </foreach>
+	</insert> -->
+	
+	<!-- 평가했는지 확인 -->
+	
+	 <select id="count2" resultType="java.lang.Integer">
+	  SELECT COUNT(PARTI_ASSESSED_CODE)
+ 	  FROM TBL_STUDY_INTERASSESS 
+      WHERE PARTI_ASSESS_CODE = #{parti_code} AND PARTI_ASSESSED_CODE =#{parti_assessed_code} 	
+	</select> 
+	
+	
+	
+	<!-- 평가 등록  -->
+	<insert id="memberassess">
+		INSERT INTO TBL_STUDY_INTERASSESS
+			(INTERASSESS_CODE, PARTI_ASSESS_CODE, RESP_CODE, ITEM_CODE, PARTI_ASSESSED_CODE, INTERASSESS_DATE)
+	    VALUES
+	   	 	('IA'|| STUDY_IASSE_SEQ.NEXTVAL, #{parti_code}, #{resp_code}, #{item_code}, #{parti_assessed_code}, SYSDATE)
+	</insert>
+	
+	
+	<!-- 스터디 누적 수 -->
+	<select id="studyCnt" resultType="java.lang.Integer">
+	<![CDATA[
+	SELECT count(P.PARTI_CODE)
+	FROM TBL_STUDY_PARTICIPANT P JOIN TBL_STUDY_APPLY A 
+	ON P.APPLY_CODE = A.APPLY_CODE
+    	LEFT JOIN TBL_STUDY_CANCEL C
+    	ON A.APPLY_CODE = C.APPLY_CODE
+        	JOIN TBL_STUDY_OPEN O
+            ON A.STUDY_CODE = O.STUDY_CODE
+                JOIN TBL_USER_REGISTER R
+                ON A.USER_CODE = R.USER_CODE
+	WHERE C.CANCEL_CODE IS NULL AND O.END_DATE <= SYSDATE AND R.ID=#{id}
+	]]>
+	</select>
+	
+	
+</mapper>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.studyit.mybatis.IAttendanceDAO">
+	
+	<!-- 오늘 요일 조회 -->
+	<select id="weekday" resultType="java.lang.String">
+	SELECT W.WEEKDAY "WEEKDAY"
+	FROM TBL_STUDY_MEETDAY M JOIN TBL_WEEKDAY W
+	ON M.WEEKDAY_CODE = W.WEEKDAY_CODE
+	WHERE STUDY_CODE = #{studycode}
+	</select>
+	
+	
+	<!--  출석부 조회 -->
+	<select id="list" resultType="com.studyit.mybatis.AttendanceDTO">
+	SELECT PARTI_CODE, ATTEND_DATE, START_TIME, END_TIME, CLOCK_IN, CLOCK_OUT
+	, CASE WHEN CLOCK_OUT &lt; END_TIME THEN '조퇴' ELSE '' END "STATUS"
+	FROM VIEW_STUDY_ATTEND
+	WHERE PARTI_CODE = #{parti_code}
+	</select> 
+
+	<!--  출석버튼 비활성화 -->
+<!-- 
+	<select id="attendInCheck" resultType="java.lang.Integer">
+	SELECT CNT AS COUNT
+	FROM VIEW_STUDY_ATTENDCHECK
+	WHERE PARTI_CODE = #{parti_code}
+	</select>
+	 -->
+	 
+	<!-- 출석 -->
+	<insert id="attendIn">
+	INSERT INTO TBL_STUDY_ATTEND(ATTEND_CODE, PARTI_CODE, ATTEND_DATE, CLOCK_IN,CLOCK_OUT)
+    VALUES('AT'|| STUDY_ATT_SEQ.NEXTVAL, #{parti_code}, SYSDATE, SYSDATE , NULL)
+	</insert>
+	
+	<!-- 출석부 코드 조회  -->
+	<select id="attendCode" resultType="java.lang.String">
+	SELECT ATTEND_CODE
+	FROM VIEW_STUDY_ATTENDCHECK
+	WHERE PARTI_CODE = #{parti_code} 
+	</select>
+	
+	<resultMap type="hashmap" id="param3"></resultMap>
+	<select id="attendOut" statementType="CALLABLE">
+	{
+		CALL PRC_STD_ATND(#{study_code},#{attend_code},#{parti_code}, SYSDATE)
+	}
+	</select>
+		 
+	 
+</mapper>

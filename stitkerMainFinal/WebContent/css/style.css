@@ -1,0 +1,154 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.radio {
+  margin-left: 17px;
+}
+html,
+body {
+  margin: 0; 
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  font-family: sans-serif;
+}
+.wrapper {
+  height: 100%;
+}
+.main-content {
+  min-height: 800px;
+}
+
+.main-content2 {
+	min-height: 800px;
+	display: flex;
+}
+
+.main-content3{
+	min-height: 1200px;
+	
+}
+.footer {
+  width: 100%;
+  padding: 30px 0;
+}
+
+#table1 {
+  display: table; 
+  width: 100%;
+}
+
+.bd {
+  border-right: 1px solid rgb(214, 214, 214);
+} 
+
+.cen {
+  text-align: center;
+} 
+
+.ro {
+  display: table-row;
+}
+.cell {
+  display: table-cell;
+  padding: 3px;
+  border-bottom: 1px solid #ddd;
+}
+.col11 {
+  width: 10%;
+}
+.col22 {
+  width: 20%;
+}
+.col33 {
+  width: 30%;
+}
+.col44 {
+  width: 40%;
+}
+
+.hit {
+  float: right;
+ /* display: inline;*/
+}
+.hit > span {
+  margin-right: 8px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.wriDate {
+  float: right;
+  /*display: inline;*/
+  margin-top: 15pt;
+  font-weight: 600;
+  margin-bottom: 15pt;
+}
+
+.title {
+  width: 100%;
+  height: 370px;
+  background-image: url("../images/title3.JPG");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.titleas {
+  width: 100%;
+  height: 370px;
+  background-image: url("../images/as2.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.title3 {
+  width: 100%;
+  height: 370px;
+  background-image: url("../images/report_register.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.title4
+{
+ width: 100%;
+  height: 370px;
+  background-image: url("../images/studylist.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;	
+}
+.titleTxt {
+  position: relative;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-weight: bold;
+  color: rgb(255, 255, 255);
+  font-size: 30pt;
+  font-family: "Do Hyeon", sans-serif;
+  letter-spacing: 2px;
+  text-shadow: 2px 4px 2px rgb(34, 34, 34);
+}
+
+.stdcon
+{
+	width:100%;
+}  
+
+
+.bottom
+{padding-bottom: 50px;
+ padding-top : 100px;
+    margin-top: 600px;
+}
+
+.page {margin-left: 50%; margin-bottom: 40px;}
+
+.title2 {
+  width: 100%;
+  height: 370px;
+  background-image: url("../images/mypage.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}

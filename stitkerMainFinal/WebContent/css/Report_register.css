@@ -1,0 +1,15 @@
+@charset "UTF-8";
+
+/* 신고사유 처음에 가리기, 위치 설정 */
+#report_reason { display: none; margin-left: 20px;}
+
+/* 테이블 모양,크기,색 설정 */
+table { border-collapse: collapse; text-align: center; width:100%; height: 150px;}
+th, td{ border-top: 1px solid gray;  border-bottom: 1px solid gray;}
+th { border-right: 1px solid gray; border-right-length: 70%;}
+
+/* 버튼, 알림메시지, 선택사항 크기 설정 */
+.btn { margin-left: 250px;}
+.message {font-size: small; margin-left: 20px;}
+input {margin-left: 20px;}
+.center > span {margin:0 auto;} 

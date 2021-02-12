@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper 
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  
+<mapper namespace="com.studyit.mybatis.IFreeBoardDAO">
+		
+		<!-- 전체 데이터 갯수 구하기 count -->
+		<select id="count" resultType="java.lang.Integer">
+			SELECT COUNT(*) AS COUNT
+			FROM VIEW_BOARD_FREE
+		</select>
+		
+		<!-- 검색 후 전체 데이터 갯수 구하기 -->
+		<select id="getDataCount" resultType="java.lang.Integer">
+		 	SELECT COUNT(*) AS COUNT
+			FROM VIEW_BOARD_FREE
+			WHERE ${searchKey} LIKE '%'||'${searchValue}'||'%'
+		</select>
+		
+		<!-- 검색 후 글 리스트 -->
+	 	<select id="getList" resultType="com.studyit.mybatis.FreeBoardDTO"> 
+		<![CDATA[ 
+			SELECT POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, HITCOUNT, TITLE, CONTENT, REC, NOTREC, USER_ID
+			FROM 
+			(
+			    SELECT ROWNUM POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, HITCOUNT, TITLE, CONTENT, REC, NOTREC, USER_ID
+			    FROM
+			    (
+			        SELECT POST_CODE, USER_CODE, WRITE_DATE, HITCOUNT, TITLE, CONTENT, REC, NOTREC, USER_ID
+			        FROM VIEW_BOARD_FREE
+			        WHERE ${searchKey} LIKE '%'||'${searchValue}'||'%'
+			        ORDER BY WRITE_DATE DESC
+			    )
+			)
+			WHERE POST_NUM BETWEEN #{start} AND #{end}
+			ORDER BY POST_NUM DESC
+		]]> 
+		</select>
+		
+		<!-- 자유게시판 리스트 조회 -->
+		<select id="list" resultType="com.studyit.mybatis.FreeBoardDTO">
+			<![CDATA[ 
+			SELECT POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, HITCOUNT, TITLE, CONTENT, REC, NOTREC, USER_NAME, USER_ID
+			FROM
+			(
+			    SELECT ROWNUM AS POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, HITCOUNT, TITLE, CONTENT, REC, NOTREC, USER_NAME, USER_ID
+			    FROM
+			    (
+			        SELECT TO_NUMBER(POST_NUM) AS POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, HITCOUNT, TITLE, CONTENT, REC, NOTREC, USER_NAME, USER_ID
+			        FROM VIEW_BOARD_FREE
+			        ORDER BY POST_NUM
+			    )
+			    ORDER BY POST_NUM DESC
+			)
+			WHERE POST_NUM >= #{start} AND POST_NUM <= #{end}
+			]]>
+		</select>
+		
+		<!-- 자유게시판 리스트 조회 - 조회순 / table sorter로 대체 -->
+		<select id="freeBoardList_hit" resultType="com.studyit.mybatis.FreeBoardDTO">
+			SELECT ROWNUM AS POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, HITCOUNT, TITLE, CONTENT, REC, NOTREC, USER_NAME, USER_ID
+			FROM 
+			(
+				SELECT POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, HITCOUNT, TITLE, CONTENT, REC, NOTREC, USER_NAME, USER_ID
+				FROM VIEW_BOARD_FREE
+				ORDER BY HITCOUNT DESC, POST_NUM DESC
+			)
+		</select>
+		
+		<!-- 자유게시판 리스트 조회 - 추천순 / table sorter로 대체 -->
+		<select id="freeBoardList_rec" resultType="com.studyit.mybatis.FreeBoardDTO">
+			SELECT ROWNUM AS POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, HITCOUNT, TITLE, CONTENT, REC, NOTREC, USER_NAME, USER_ID
+			FROM 
+			(
+				SELECT POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, HITCOUNT, TITLE, CONTENT, REC, NOTREC, USER_NAME, USER_ID
+				FROM VIEW_BOARD_FREE
+				ORDER BY REC DESC, POST_NUM DESC
+			)
+		</select>
+		
+		<!-- 게시물 작성 -->
+		<insert id="freeBoardInsert">
+			INSERT INTO TBL_BOARD_FREE(POST_CODE, USER_CODE, WRITE_DATE, HITCOUNT, TITLE, CONTENT) 
+			VALUES ('BF'||BOARD_FREE_SEQ.NEXTVAL, #{user_code}, DEFAULT, DEFAULT, #{title}, #{content})
+		</insert>
+		
+		<!-- 조회수 증가 -->
+		<update id="hitcount">
+			UPDATE VIEW_BOARD_FREE
+			SET HITCOUNT = HITCOUNT+1
+			WHERE POST_CODE = #{post_code}
+		</update>
+		
+		<!-- 상세페이지 출력 -->
+		<select id="freeBoard_Detail" resultType="com.studyit.mybatis.FreeBoardDTO">
+			SELECT POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, HITCOUNT, TITLE, CONTENT, REC, NOTREC, USER_NAME, USER_ID
+			FROM VIEW_BOARD_FREE
+			WHERE POST_CODE = #{post_code}
+		</select>
+		
+		<!-- 댓글 리스트 출력 -->
+		<select id="comment" resultType="com.studyit.mybatis.FreeBoardCmtDTO">
+			SELECT F.POST_CODE, C.COMMENT_CODE, C.COMMENTS, C.USER_CODE, TO_CHAR(C.WRITE_DATE,'YYYY-MM-DD') AS WRITE_DATE, U.ID
+			FROM TBL_BOARD_FREE F, TBL_COMMENT_FREE C, TBL_USER_REGISTER U
+			WHERE F.POST_CODE = C.POST_CODE
+			  AND C.USER_CODE = U.USER_CODE
+			    AND F.POST_CODE = #{post_code}
+			ORDER BY C.WRITE_DATE
+		</select>
+		
+		<!-- 댓글 갯수 -->
+		<select id="commentCnt" resultType="java.lang.Integer">
+			SELECT COUNT (*) AS COUNT
+			FROM TBL_BOARD_FREE F, TBL_COMMENT_FREE C, TBL_USER_REGISTER U
+			WHERE F.POST_CODE = C.POST_CODE
+			  AND C.USER_CODE = U.USER_CODE
+			  AND F.POST_CODE = #{post_code}
+		</select>
+		
+		<!-- 댓글 입력 -->
+		<insert id="addComment">
+			INSERT INTO TBL_COMMENT_FREE(COMMENT_CODE, POST_CODE, COMMENTS, USER_CODE, WRITE_DATE) 
+			VALUES ('CF'||COMMENT_FREE_SEQ.NEXTVAL, #{post_code}, #{comments}, #{user_code}, DEFAULT)
+		</insert>
+		
+		<!-- 추천 입력 -->
+		<insert id="rec">
+			INSERT INTO TBL_REC_FREE(REC_CODE, POST_CODE, USER_CODE, REC_CHECK, REC_DATE) 
+			VALUES ('RF'||REC_FREE_SEQ.NEXTVAL, #{post_code}, #{user_code}, 1, DEFAULT)
+		</insert>
+		
+		<!-- 비추천 입력 -->
+		<insert id="notrec">
+			INSERT INTO TBL_REC_FREE(REC_CODE, POST_CODE, USER_CODE, REC_CHECK, REC_DATE) 
+			VALUES ('RF'||REC_FREE_SEQ.NEXTVAL, #{post_code}, #{user_code}, 2, DEFAULT)
+		</insert>
+		
+		<!-- 추천 여부 체크 -->
+		<select id="recCheck" resultType="java.lang.Integer">
+			SELECT COUNT(*)
+			FROM TBL_REC_FREE
+			WHERE USER_CODE= #{user_code} AND POST_CODE = #{post_code}
+		</select>
+		
+		<!-- 전체에서 검색 --> 
+		<select id="freeBoardSearch" resultType="com.studyit.mybatis.FreeBoardDTO"> 
+		<![CDATA[ 
+		SELECT ROWNUM AS POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, HITCOUNT, TITLE, CONTENT, REC, NOTREC, USER_NAME, USER_ID 
+		FROM
+		(
+			SELECT POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, HITCOUNT, TITLE, CONTENT, REC, NOTREC, USER_NAME, USER_ID 
+			FROM VIEW_BOARD_FREE 
+			WHERE TITLE LIKE '%'||#{searchValue}||'%' 
+			   OR USER_ID LIKE '%'||#{searchValue}||'%' 
+			   OR CONTENT LIKE '%'||#{searchValue}||'%' 
+			ORDER BY WRITE_DATE DESC 
+		)
+		]]> 
+		</select>
+		
+		<!-- 제목으로 검색 --> 
+		<select id="freeBoardTitleSearch" resultType="com.studyit.mybatis.FreeBoardDTO"> 
+		<![CDATA[ 
+		SELECT ROWNUM AS POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, HITCOUNT, TITLE, CONTENT, REC, NOTREC, USER_NAME, USER_ID 
+		FROM
+		(
+			SELECT POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, HITCOUNT, TITLE, CONTENT, REC, NOTREC, USER_NAME, USER_ID 
+			FROM VIEW_BOARD_FREE 
+			WHERE TITLE LIKE '%'||#{searchValue}||'%' 
+			ORDER BY WRITE_DATE DESC 
+		)
+		]]> 
+		</select>
+		
+		<!-- 작성자로 검색 -->
+		<select id="freeBoardWriterSearch" resultType="com.studyit.mybatis.FreeBoardDTO"> 
+		<![CDATA[ 
+		SELECT ROWNUM AS POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, HITCOUNT, TITLE, CONTENT, REC, NOTREC, USER_NAME, USER_ID 
+		FROM
+		(
+			SELECT POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, HITCOUNT, TITLE, CONTENT, REC, NOTREC, USER_NAME, USER_ID 
+			FROM VIEW_BOARD_FREE 
+			WHERE USER_ID LIKE '%'||#{searchValue}||'%' 
+			ORDER BY WRITE_DATE DESC 
+		)
+		]]> 
+		</select>
+		
+		<!-- 내용으로 검색 -->
+		<select id="freeBoardContentSearch" resultType="com.studyit.mybatis.FreeBoardDTO"> 
+		<![CDATA[ 
+		SELECT ROWNUM AS POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, HITCOUNT, TITLE, CONTENT, REC, NOTREC, USER_NAME, USER_ID 
+		FROM
+		(
+			SELECT POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, HITCOUNT, TITLE, CONTENT, REC, NOTREC, USER_NAME, USER_ID 
+			FROM VIEW_BOARD_FREE 
+			WHERE CONTENT LIKE '%'||#{searchValue}||'%' 
+			ORDER BY WRITE_DATE DESC
+		) 
+		]]> 
+		</select>
+		
+		<!-- 제목&내용 검색 -->
+		<select id="freeBoardTnCSearch" resultType="com.studyit.mybatis.FreeBoardDTO"> 
+		<![CDATA[ 
+		SELECT ROWNUM AS POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, HITCOUNT, TITLE, CONTENT, REC, NOTREC, USER_NAME, USER_ID 
+		FROM
+		(
+			SELECT POST_NUM, POST_CODE, USER_CODE, WRITE_DATE, HITCOUNT, TITLE, CONTENT, REC, NOTREC, USER_NAME, USER_ID 
+			FROM VIEW_BOARD_FREE 
+			WHERE TITLE LIKE '%'||#{searchValue}||'%' 
+			  OR CONTENT LIKE '%'||#{searchValue}||'%' 
+			ORDER BY WRITE_DATE DESC 
+			
+		) 
+		]]> 
+		</select>
+		
+		<!-- 자유게시판 게시물 삭제 -->
+		<delete id="freeBoardDelete">
+			DELETE
+			FROM TBL_BOARD_FREE
+			WHERE POST_CODE = #{post_code}
+		</delete>
+		
+		<!-- 자유게시판 게시물 수정 -->
+		<update id="freeBoardUpdate">
+			UPDATE TBL_BOARD_FREE
+			SET TITLE=#{title}, CONTENT=#{content} 
+			WHERE POST_CODE = #{post_code}
+		</update>
+		
+		<!-- 신고여부체크 -->
+		<select id="rptCheck" resultType="java.lang.Integer">
+			SELECT COUNT(*) AS COUNT
+			FROM TBL_REPORT_REG_FREE
+			WHERE POST_CODE = #{post_code} AND USER_CODE = #{user_code}
+		</select>
+		
+		<!-- 자유게시판 댓글 삭제 -->
+		<update id="deleteComment">
+			DELETE
+			FROM TBL_COMMENT_FREE
+			WHERE COMMENT_CODE = #{comment_code}
+		</update>
+		
+		<!-- 자유게시판 댓글 수정 -->
+		<update id="updateComment">
+			UPDATE TBL_COMMENT_FREE
+			SET COMMENTS = #{comments}
+			WHERE COMMENT_CODE = #{comment_code}
+		</update>
+		
+		<resultMap type="hashmap" id="param"></resultMap>
+		<select id="insertReport" statementType="CALLABLE">
+			{
+				CALL PRC_RPT_REG_FREE_INSERT(#{post_code},#{user_code},#{report_reason},#{post_report_ctg_code})
+			}
+		</select>
+		
+		
+</mapper>

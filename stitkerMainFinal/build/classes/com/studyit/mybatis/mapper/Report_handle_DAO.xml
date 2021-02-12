@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.studyit.mybatis.IReport_handle_DAO">
+
+<!-- 경고 등록 -->
+<resultMap type="hashmap" id="param"></resultMap>
+<select id="insertWarning" statementType="CALLABLE">
+	{
+		CALL PRC_INSERT_WARNING(#{reported_user_code}, SYSDATE)
+	}
+</select>
+
+<!-- 스터디원신고 -->
+<update id="updateRhParti">
+UPDATE TBL_MEM_REPORT_HANDLE
+SET HANDLE_RESULT = 'RH1', HANDLE_DATE = SYSDATE
+WHERE MEM_REPORT_REG_CODE = (SELECT H.MEM_REPORT_REG_CODE
+							 FROM TBL_MEM_REPORT_REG R JOIN TBL_MEM_REPORT_HANDLE H
+							   ON R.MEM_REPORT_REG_CODE = H.MEM_REPORT_REG_CODE
+							 WHERE PARTI_REPORTED_CODE = #{reported_parti_code})
+</update>
+
+<delete id="deleteRegParti">
+	DELETE
+	FROM TBL_MEM_REPORT_REG
+	WHERE PARTI_REPORTED_CODE = #{reported_parti_code}
+</delete>
+
+<delete id="deleteRhParti">
+	DELETE
+	FROM TBL_MEM_REPORT_HANDLE
+	WHERE MEM_REPORT_REG_CODE = (SELECT H.MEM_REPORT_REG_CODE
+							 	 FROM TBL_MEM_REPORT_REG R JOIN TBL_MEM_REPORT_HANDLE H
+							   	 ON R.MEM_REPORT_REG_CODE = H.MEM_REPORT_REG_CODE
+							 	 WHERE PARTI_REPORTED_CODE = #{reported_parti_code})
+</delete>
+
+
+<!-- 정보공유  -->
+<update id="updateRhInform">
+	UPDATE TBL_REPORT_HANDLE_INFORM
+	SET HANDLE_RESULT_CODE = 'DR1', HANDLE_DATE = SYSDATE
+	WHERE POST_REPORT_CODE = (SELECT R.POST_REPORT_CODE 
+							  FROM TBL_REPORT_REG_INFORM R JOIN TBL_REPORT_HANDLE_INFORM H
+							    ON R.POST_REPORT_CODE = H.POST_REPORT_CODE
+							  WHERE R.POST_CODE = #{post_code})
+</update>
+
+<delete id="deleteRegInform">
+	DELETE
+	FROM TBL_REPORT_REG_INFORM
+	WHERE POST_CODE = #{post_code}
+</delete>
+
+<delete id="deleteRhInform">
+	DELETE
+	FROM TBL_REPORT_HANDLE_INFORM
+	WHERE POST_REPORT_CODE = (SELECT R.POST_REPORT_CODE 
+							  FROM TBL_REPORT_REG_INFORM R JOIN TBL_REPORT_HANDLE_INFORM H
+							    ON R.POST_REPORT_CODE = H.POST_REPORT_CODE
+							  WHERE R.POST_CODE = #{post_code})
+</delete>
+
+
+<!-- 면접,코테 후기  -->
+<update id="updateRhInterview">
+	UPDATE TBL_REPORT_HANDLE_INTERVIEW
+	SET HANDLE_RESULT_CODE = 'DR1', HANDLE_DATE = SYSDATE
+	WHERE POST_REPORT_CODE = (SELECT R.POST_REPORT_CODE 
+							  FROM TBL_REPORT_REG_INTERVIEW R JOIN TBL_REPORT_HANDLE_INTERVIEW H
+							    ON R.POST_REPORT_CODE = H.POST_REPORT_CODE
+							  WHERE R.POST_CODE = #{post_code})
+</update>
+
+<delete id="deleteRegInterview">
+	DELETE
+	FROM TBL_REPORT_REG_INTERVIEW
+	WHERE POST_CODE = #{post_code}
+</delete>
+
+<delete id="deleteRhInterview">
+	DELETE
+	FROM TBL_REPORT_HANDLE_INTERVIEW
+	WHERE POST_REPORT_CODE = (SELECT R.POST_REPORT_CODE 
+							  FROM TBL_REPORT_REG_INTERVIEW R JOIN TBL_REPORT_HANDLE_INTERVIEW H
+							    ON R.POST_REPORT_CODE = H.POST_REPORT_CODE
+							  WHERE R.POST_CODE = #{post_code})
+</delete>
+
+
+<!-- 세미나  -->
+<update id="updateRhSeminar">
+	UPDATE TBL_REPORT_HANDLE_SEMINAR
+	SET HANDLE_RESULT_CODE = 'DR1', HANDLE_DATE = SYSDATE
+	WHERE POST_REPORT_CODE = (SELECT R.POST_REPORT_CODE 
+							  FROM TBL_REPORT_REG_SEMINAR R JOIN TBL_REPORT_HANDLE_SEMINAR H
+							    ON R.POST_REPORT_CODE = H.POST_REPORT_CODE
+							  WHERE R.POST_CODE = #{post_code})
+</update>
+
+<delete id="deleteRegSeminar">
+	DELETE
+	FROM TBL_REPORT_REG_SEMINAR
+	WHERE POST_CODE = #{post_code}
+</delete>
+
+<delete id="deleteRhSeminar">
+	DELETE
+	FROM TBL_REPORT_HANDLE_SEMINAR
+	WHERE POST_REPORT_CODE = (SELECT R.POST_REPORT_CODE 
+							  FROM TBL_REPORT_REG_SEMINAR R JOIN TBL_REPORT_HANDLE_SEMINAR H
+							    ON R.POST_REPORT_CODE = H.POST_REPORT_CODE
+							  WHERE R.POST_CODE = #{post_code})
+</delete>
+
+
+<!-- 자유게시판  -->
+<update id="updateRhFree">
+	UPDATE TBL_REPORT_HANDLE_FREE
+	SET HANDLE_RESULT_CODE = 'DR1', HANDLE_DATE = SYSDATE
+	WHERE POST_REPORT_CODE = (SELECT R.POST_REPORT_CODE 
+							  FROM TBL_REPORT_REG_FREE R JOIN TBL_REPORT_HANDLE_FREE H
+							    ON R.POST_REPORT_CODE = H.POST_REPORT_CODE
+							  WHERE R.POST_CODE = #{post_code})
+</update>
+
+<delete id="deleteRegFree">
+	DELETE
+	FROM TBL_REPORT_REG_FREE
+	WHERE POST_CODE = #{post_code}
+</delete>
+
+<delete id="deleteRhFree">
+	DELETE
+	FROM TBL_REPORT_HANDLE_FREE
+	WHERE POST_REPORT_CODE = (SELECT R.POST_REPORT_CODE 
+							  FROM TBL_REPORT_REG_FREE R JOIN TBL_REPORT_HANDLE_FREE H
+							    ON R.POST_REPORT_CODE = H.POST_REPORT_CODE
+							  WHERE R.POST_CODE = #{post_code})
+</delete>
+
+
+<!-- 질문게시판  -->
+<update id="updateRhQuestion">
+	UPDATE TBL_REPORT_HANDLE_QUESTION
+	SET HANDLE_RESULT_CODE = 'DR1', HANDLE_DATE = SYSDATE
+	WHERE POST_REPORT_CODE = (SELECT R.POST_REPORT_CODE 
+							  FROM TBL_REPORT_REG_QUESTION R JOIN TBL_REPORT_HANDLE_QUESTION H
+							    ON R.POST_REPORT_CODE = H.POST_REPORT_CODE
+							  WHERE R.POST_CODE = #{post_code})
+</update>
+
+<delete id="deleteRegQuestion">
+	DELETE
+	FROM TBL_REPORT_REG_QUESTION
+	WHERE POST_CODE = #{post_code}
+</delete>
+
+<delete id="deleteRhQuestion">
+	DELETE
+	FROM TBL_REPORT_HANDLE_QUESTION
+	WHERE POST_REPORT_CODE = (SELECT R.POST_REPORT_CODE 
+							  FROM TBL_REPORT_REG_QUESTION R JOIN TBL_REPORT_HANDLE_QUESTION H
+							    ON R.POST_REPORT_CODE = H.POST_REPORT_CODE
+							  WHERE R.POST_CODE = #{post_code})
+</delete>
+
+
+<!-- 답변게시판  -->
+<update id="updateRhAnswer">
+	UPDATE TBL_REPORT_HANDLE_ANSWER
+	SET HANDLE_RESULT_CODE = 'DR1', HANDLE_DATE = SYSDATE
+	WHERE POST_REPORT_CODE = (SELECT R.POST_REPORT_CODE 
+							  FROM TBL_REPORT_REG_ANSWER R JOIN TBL_REPORT_HANDLE_ANSWER H
+							    ON R.POST_REPORT_CODE = H.POST_REPORT_CODE
+							  WHERE R.POST_CODE = #{post_code})
+</update>
+
+<delete id="deleteRegAnswer">
+	DELETE
+	FROM TBL_REPORT_REG_ANSWER
+	WHERE POST_CODE = #{post_code}
+</delete>
+
+<delete id="deleteRhAnswer">
+	DELETE
+	FROM TBL_REPORT_HANDLE_ANSWER
+	WHERE POST_REPORT_CODE = (SELECT R.POST_REPORT_CODE 
+							  FROM TBL_REPORT_REG_ANSWER R JOIN TBL_REPORT_HANDLE_ANSWER H
+							    ON R.POST_REPORT_CODE = H.POST_REPORT_CODE
+							  WHERE R.POST_CODE = #{post_code})
+</delete>
+
+
+<!-- 스터디후기  -->
+<update id="updateRhReview">
+	UPDATE TBL_REPORT_HANDLE_STUDYREVIEW
+	SET HANDLE_RESULT_CODE = 'DR1', HANDLE_DATE = SYSDATE
+	WHERE POST_REPORT_CODE = (SELECT R.POST_REPORT_CODE 
+							  FROM TBL_REPORT_REG_STUDYREVIEW R JOIN TBL_REPORT_HANDLE_STUDYREVIEW H
+							    ON R.POST_REPORT_CODE = H.POST_REPORT_CODE
+							  WHERE R.POST_CODE = #{post_code})
+</update>
+
+<delete id="deleteRegReview">
+	DELETE
+	FROM TBL_REPORT_REG_STUDYREVIEW
+	WHERE POST_CODE = #{post_code}
+</delete>
+
+<delete id="deleteRhReview">
+	DELETE
+	FROM TBL_REPORT_HANDLE_STUDYREVIEW
+	WHERE POST_REPORT_CODE = (SELECT R.POST_REPORT_CODE 
+							  FROM TBL_REPORT_REG_STUDYREVIEW R JOIN TBL_REPORT_HANDLE_STUDYREVIEW H
+							    ON R.POST_REPORT_CODE = H.POST_REPORT_CODE
+							  WHERE R.POST_CODE = #{post_code})
+</delete>
+
+
+<!-- 스터디게시판  -->
+<update id="updateRhStudy">
+	UPDATE TBL_STUDY_ACCUSE_HANDLE
+	SET HANDLE_RESULT_CODE = 'DR1', ACCUSE_HANDLE_DATE = SYSDATE
+	WHERE ACCUSE_CODE = (SELECT H.ACCUSE_CODE 
+						 FROM TBL_STUDY_ACCUSE R JOIN TBL_STUDY_ACCUSE_HANDLE H
+						   ON R.ACCUSE_CODE = H.ACCUSE_CODE
+						 WHERE R.STUDY_CODE = #{post_code})
+</update>
+
+<delete id="deleteRegStudy">
+	DELETE
+	FROM TBL_STUDY_ACCUSE
+	WHERE STUDY_CODE = #{post_code}
+</delete>
+
+<delete id="deleteRhStudy">
+	DELETE
+	FROM TBL_STUDY_ACCUSE_HANDLE
+	WHERE ACCUSE_CODE = (SELECT ACCUSE_CODE
+						 FROM TBL_STUDY_ACCUSE
+						 WHERE STUDY_CODE = #{post_code})
+</delete>
+
+
+
+
+</mapper>

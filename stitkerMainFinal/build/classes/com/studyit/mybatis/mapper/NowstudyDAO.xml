@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.studyit.mybatis.INowstudyDAO">
+
+	<select id="list" resultType="com.studyit.mybatis.NowstudyDTO">
+	SELECT STUDY_NAME, CLOSE_DATE,PERIOD,STUDY_CODE,PARTI_CODE,USER_CODE,ID, LEADER,WEEKDAY,LOC, START_TIME, END_TIME, PROGRESS     
+	FROM VIEW_STUDY_NOW
+	<where>
+	<if test="id != null">AND ID = #{id} </if>
+	<if test="studycode != null">AND STUDY_CODE=#{studycode} </if>
+	</where>
+	</select>
+
+	<select id="weekday" resultType="java.lang.String">
+	SELECT WEEKDAY, STUDY_CODE
+	FROM VIEW_STUDY_WEEKDAY
+	WHERE STUDY_CODE=#{studycode}
+	</select>
+	
+	<select id="pgs" resultType="java.lang.Double">
+	SELECT ROUND((NOWPGS*100)/PROGRESS,1) "PGS"
+	FROM VIEW_STUDY_NOW
+	WHERE STUDY_CODE =#{studycode} AND ID =#{id}
+	</select>
+
+	<!--  내보내기 프로시저 -->
+	<resultMap type="hashmap" id="param"></resultMap>
+	<select id="kick" statementType="CALLABLE">
+	{
+		CALL PRG_KICK_HANDLE_STUDY_CANCEL(#{kicked_parti_code},#{parti_code})
+	}
+	</select>
+
+	<!--  스터디원 내보내기 버튼 비활성화 -->
+	<select id="kickCheck" resultType="java.lang.Integer">
+	SELECT COUNT(*) AS COUNT
+	FROM TBL_MEM_KICK_REG
+	WHERE PARTI_KICKED_CODE =#{kicked_parti_code} AND PARTI_KICK_CODE=#{parti_code} 
+	</select>
+	
+	<select id="applyCode" resultType="java.lang.String">
+	SELECT APPLY_CODE
+	FROM VIEW_STUDY_PARTI_CODE
+	WHERE STUDY_CODE =#{studycode} AND  ID=#{id}
+	</select>
+	
+	<!-- 스터디 나가기  -->
+	<resultMap type="hashmap" id="param2"></resultMap>
+	<select id="studycancel" statementType="CALLABLE">
+	{
+		CALL PRC_INSERT_CANCEL(#{apply_code}, SYSDATE, NULL)
+	}
+	</select>
+	
+	
+</mapper>

@@ -1,0 +1,27 @@
+@charset "UTF-8";
+	/* 
+	Find_id_result(아이디 찾기 결과)
+	
+	Find_pw_result(비밀번호 찾기 결과)
+	
+	페이지 공통 CSS 
+	*/
+	.btn
+	{
+		float: right;
+	}
+	span
+	{
+		font-size: 9pt;
+	}
+	#userInfo
+	{
+		font-size: 11pt;
+		color: #0080c0;
+		font-weight: bold;
+	}
+	#find_result
+	{
+		font-size: 11pt;
+		/* font-weight: bold; */
+	}
